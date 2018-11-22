@@ -1,0 +1,19 @@
+#EXTM3U
+#EXTINF:-1,Muzo FM
+http://stream4.nadaje.com/muzo
+
+#EXTINF:-1,Radio Złote Przeboje
+http://lodz.radio.pionier.net.pl:8000/pl/tuba9-1.mp3
+
+#EXTM3U:-1,Jedynka
+http://stream11.polskieradio.pl/pr1/pr1.sdp/playlist.m3u8
+
+#EXTINF:-1,Trójka
+http://w.dktr.pl:8000/trojka3.ogg
+
+#EXTINF:-1,RadioZet Chillout
+http://chi-net-01.cdn.eurozet.pl:8900/
+
+#EXTINF:-1,Radio dla Ciebie
+http://stream4.nadaje.com:14002/ostroleka
+

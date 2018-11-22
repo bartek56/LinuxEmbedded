@@ -1,0 +1,10 @@
+[Unit]
+Description=MediaServer App
+After=rc-local.service
+
+[Service]
+Type=forking
+ExecStart=/opt/MediaServerApp/bin/MediaServerApp
+
+[Install]
+WantedBy=multi-user.target

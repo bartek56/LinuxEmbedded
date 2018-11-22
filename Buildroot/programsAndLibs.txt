@@ -1,0 +1,75 @@
+Kernel
+    - Linux kernel default for Raspberry Pi 3B from git repository (bcm2709 defconfig)
+Toolchain
+    - external toolchain (crosstool)
+    - gcc 6.x
+    - kernel headers 4.9.x
+    - toolchain C glibc/eglibc
+    - SSP, RPC, C++ support
+System
+    - Root FS skeleton
+    - systemd init system
+    - /dev menagament using udev from systemd
+    - /bin/sh bash
+Hardware
+    - rpi-userland (EGL library)
+    - rpi-bt-firmware
+    - rpi-firmware 
+    - rpi-wifi-firmware (BCM43xxx)
+    - binutils (development tools)
+Graphics
+    - QT5
+    - x.org
+        - twm
+        - xkill
+        - xconsole
+        - xinit
+        - xinput
+        - xinput calibration (ustawienie ekranu)
+        - rstart
+        - xf86-input-evdev
+        - xf86-input-libinput
+        - xf86-input-keyboard
+        - xf86-input-mouse
+        - xf86-video-fbdev
+        - xf86-video-fbturbo
+        - xf86-video-vesa
+Network (firmware !!!)
+    - autossh, openssh, sshpass
+    - bluez-utils
+    - crda (driver)
+    - iw
+    - rsync
+    - samba4
+    - vsftpd (linux_pam - pam_permit.so)
+    - wpa_supplicant (wpa wifi)
+    - wget
+    - wpan-tools
+    - screen (shells)
+Text Editor
+    - nano
+    - uemacs
+    - vim
+Audio i Video
+    - Alsa-utils (driver)
+    - pulseaudio (driver) ??
+    - mpg123 (mp3)
+    - mplayer (video player)
+    - sox (audio converter)
+    - gmpc (audio client) -> libmpdclient
+    - mpd (audio server) -> tcp
+Image player
+    - gqview
+File Browser
+    - pcmanfm
+Font, cursors, icons
+    - hicolor icon theme (gmpc uses it)
+Printer server
+    - cups (you must copy website files from laptop)
+Media server
+    - miniDLNA
+    
+    
+    
+
+

@@ -1,0 +1,9 @@
+[Unit]
+Description=MPD Website Player
+After=network.target mpd.service
+
+[Service]
+ExecStart=/usr/bin/ympd
+
+[Install]
+WantedBy=multi-user.target

@@ -58,6 +58,7 @@ Audio i Video
     - sox (audio converter)
     - gmpc (audio client) -> libmpdclient
     - mpd (audio server) -> tcp
+    - sbc (bluez-alsa)
 Image player
     - gqview
 File Browser

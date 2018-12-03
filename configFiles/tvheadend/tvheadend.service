@@ -1,0 +1,10 @@
+[Unit]
+Description=tvheadend
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/tvheadend -f -u root
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,11 @@
+[Unit]
+Description=Apache Web Server
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/apachectl start
+
+[Install]
+WantedBy=multi-user.target
+

@@ -6,6 +6,7 @@ Toolchain
     - kernel headers 4.9.x
     - toolchain C glibc/eglibc
     - SSP, RPC, C++ support
+    - gdbserver
 System
     - Root FS skeleton
     - systemd init system
@@ -35,6 +36,7 @@ Graphics
         - xf86-video-fbturbo
         - xf86-video-vesa
 Network (firmware !!!)
+    - dhcpcd
     - autossh, openssh, sshpass
     - bluez-utils
     - crda (driver)
@@ -69,7 +71,10 @@ Printer server
     - cups (you must copy website files from laptop)
 Media server
     - miniDLNA
-    
+Shells
+    - bash
+    - screen
+
     
     
 

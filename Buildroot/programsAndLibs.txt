@@ -18,6 +18,7 @@ Hardware
     - rpi-firmware 
     - rpi-wifi-firmware (BCM43xxx)
     - binutils (development tools)
+    - ntfs-3g
 Graphics
     - QT5
     - x.org
@@ -61,6 +62,17 @@ Audio i Video
     - gmpc (audio client) -> libmpdclient
     - mpd (audio server) -> tcp
     - sbc (bluez-alsa)
+    - GStreamer
+    - vlc
+    - espeaker
+    - dvblast
+    - ympd
+    - 
+DVB-T
+    - firmware
+    - w_scan
+    - DVB
+    - TvHeahEnd
 Image player
     - gqview
 File Browser
@@ -74,8 +86,4 @@ Media server
 Shells
     - bash
     - screen
-
-    
-    
-
 

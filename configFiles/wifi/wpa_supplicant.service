@@ -2,6 +2,7 @@
 Description=WPA supplicant
 Before=network.target
 Wants=network.target
+After=dbus.service
 
 [Service]
 Type=forking

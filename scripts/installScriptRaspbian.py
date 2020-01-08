@@ -136,6 +136,10 @@ def ubooquityInstall(ver):
 
 def fileBrowswerInstall():
     print ("\n\n\nInstall FileBrowser\n\n\n")
+    
+    output = subprocess.run(["sudo", "apt","--force-yes", "install", "curl"], check=True)
+    print (output)
+
     output = subprocess.run(["curl", "-fsSL","https://filebrowser.xyz/get.sh", "|", "bash"], check=True)
     print (output)
   
@@ -152,7 +156,7 @@ def fileBrowswerInstall():
 def plexInstall():
     print ("\n\n\nInstall Plex\n\n\n")
 
-    output = subprocess.run(["sudo", "apt", "install", "apt-transport-https", "ca-certificates", "curl"], check=True)
+    output = subprocess.run(["sudo", "apt", "--force-yes", "install","apt-transport-https", "ca-certificates", "curl"], check=True)
     print (output)
     output = subprocess.run(["curl", "https://downloads.plex.tv/plex-keys/PlexSign.key", "|", "sudo","apt-key", "add", "-"], check=True)
     print (output)
@@ -165,6 +169,20 @@ def plexInstall():
     output = subprocess.run(["sudo", "apt", "--assume-yes","install", "plexmediaserver"], check=True)
 
 def jellyfinInstall():
+    print ("\n\n\nInstall Jellyfin\n\n\n")
+
+    output = subprocess.run(["sudo", "apt", "--force-yes", "install", "apt-transport-https", "ca-certificates", "curl"], check=True)
+    print (output)
+
+    output = subprocess.run(["wget", "-O", "https://repo.jellyfin.org/debian/jellyfin_team.gpg.hey", "|", "sudo", "apt-key", "add", "-"], check=True)
+    print (output)
+    output = subprocess.run(["echo", "\"deb [arch=$( dpkg --print-architecture )] https://repo.jellyfin.org/debian $( lsb_release -c -s ) main\"", "|", "sudo","tee", "/etc/apt/sources.list.d/jellyfin.list"], check=True)
+    print (output)
+
+    output = subprocess.run(["sudo", "apt", "update"], check=True)
+    print (output)
+
+    output = subprocess.run(["sudo", "apt", "--assume-yes","install", "jellyfin"], check=True)
 
 
 
@@ -182,6 +200,7 @@ def main():
     tvHeadEndInstall()
     fileBrowserInstall()
     plexInstall()
+    jellyfinInstall()
 
 if __name__ == '__main__':
     main()

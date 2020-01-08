@@ -17,6 +17,15 @@ def upgrade():
     print ("\n\n\nInstall wget\n\n\n")
     output = subprocess.run(["sudo", "apt-get","--assume-yes", "install", "wget"], check=True)
     print (output)
+   
+    print ("\n\n\nInstall vim\n\n\n")
+    output = subprocess.run(["sudo", "apt-get","--assume-yes", "install", "vim"], check=True)
+    print (output)
+
+    print ("\n\n\nInstall ntfs-3g\n\n\n")
+    output = subprocess.run(["sudo", "apt-get","--assume-yes", "install", "ntfs-3g"], check=True)
+    print (output)
+
 
 def getScripts():
     print ("\n\n\nget Scripts\n\n\n")
@@ -66,6 +75,23 @@ def websiteMusicPlayerClientInstall(ver):
     output = subprocess.run(["sudo", "systemctl","start", "ympd.service"], check=True)
     print (output)
 
+def getWebsite()
+    print ("\n\n\nwebsite download\n\n\n")
+    output = subprocess.run(["sudo", "cp","../website/*", "/var/www/html/", "tvheadend"], check=True)
+    print (output)
+
+def sambaInstall()
+    print ("\n\n\nInstall Samba\n\n\n")
+    output = subprocess.run(["sudo", "apt-get","--assume-yes", "install", "samba"], check=True)
+    print (output)
+    
+    output = subprocess.run(["sudo", "cp","../configFiles/Samba/smb.config", "/etc/samba/"], check=True)
+    print (output)
+
+def torrentClientInstall()
+    print ("\n\n\nInstall transmission-da (Torrent Client)\n\n\n")
+    output = subprocess.run(["sudo", "apt-get","--assume-yes", "install", "transmission-daemon"], check=True)
+    print (output)
 
 def tvHeadEndInstall():
     print ("\n\n\nInstall TvHeadEnd\n\n\n")
@@ -76,6 +102,52 @@ def apache2Install():
     print ("\n\n\nInstall Apache2\n\n\n")
     output = subprocess.run(["sudo", "apt-get","--assume-yes", "install", "apache2"], check=True)
     print (output)
+
+def ubooquityInstall(ver):
+    print ("\n\n\nInstall ubooquity\n\n\n")
+    zipFile="Ubooquity-"+ver+".zip"
+    websiteStart="http://vaemendis.net/ubooquity/downloads/"
+    url=websiteStart+tarfile
+    output = subprocess.run(["wget", url], check=True)
+    print (output)
+    output = subprocess.run(["unzip", zipFile], check=True)
+    print (output)
+
+    output = subprocess.run(["sudo", "rm", zipFile], check=True)
+    print (output)
+
+    output = subprocess.run(["sudo", "mkdir","/opt/ubooquity"], check=True)
+    print (output)
+
+    output = subprocess.run(["sudo", "cp","ubooquity/Ubooquity.jar", "/opt/ubooquity/"], check=True)
+    print (output)
+
+    output = subprocess.run(["sudo", "rm","-rf", "ubooquity"], check=True)
+    print (output)
+
+    output = subprocess.run(["sudo", "cp","../configFiles/ubooquity/ubooquity.service", "/lib/systemd/system/"], check=True)
+    print (output)
+
+    output = subprocess.run(["sudo","systemctl", "enable","ubooquity.service"], check=True)
+    print (output)
+
+    output = subprocess.run(["sudo", "systemctl","start", "ubooquity.service"], check=True)
+    print (output)
+
+def fileBrowswerInstall():
+    print ("\n\n\nInstall FileBrowser\n\n\n")
+    output = subprocess.run(["curl", "-fsSL","https://filebrowser.xyz/get.sh", "|", "bash"], check=True)
+    print (output)
+  
+    output = subprocess.run(["sudo", "cp","../configFiles/filebrowser/filebrowser.service", "/lib/systemd/system/"], check=True)
+    print (output)
+
+    output = subprocess.run(["sudo","systemctl", "enable","filebrowser.service"], check=True)
+    print (output)
+
+    output = subprocess.run(["sudo", "systemctl","start", "filebrowser.service"], check=True)
+    print (output)
+
 
 def plexInstall():
     print ("\n\n\nInstall Plex\n\n\n")
@@ -92,18 +164,24 @@ def plexInstall():
 
     output = subprocess.run(["sudo", "apt", "--assume-yes","install", "plexmediaserver"], check=True)
 
+def jellyfinInstall():
+
+
+
+
 def main():
     upgrade()
-#    getScripts()
-#    rpi_update()
-#    musicPlayerDaemonInstall()
-#    websiteMusicPlayerClientInstall()
-#    tvHeadEndInstall()
-#    apache2Install()
-#    plexInstall()
-    
-
-
+    rpi_update()
+    apache2Install()
+    getWebsite()   
+    musicPlayerDaemonInstall()
+    websiteMusicPlayerClientInstall("1.2.3")
+    sambaInstall()
+    torrentClientInstall()
+    ubooquityInstall("2.1.2")
+    tvHeadEndInstall()
+    fileBrowserInstall()
+    plexInstall()
 
 if __name__ == '__main__':
     main()

@@ -1,0 +1,16 @@
+[Unit]
+Description=Ubooquity-Server
+After=network.target
+
+[Service]
+Type=single
+User=root
+ExecStart=java \
+-jar /opt/ubooquity/Ubooquity.jar \
+--remoteadmin \
+--workdir /opt/ubooquity/ \
+--headless
+
+[Install]
+WantedBy=multi-user.target
+

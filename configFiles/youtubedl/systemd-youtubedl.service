@@ -1,0 +1,8 @@
+[Unit]
+Description=YouTube downloader
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python /opt/downloadFromYoutube.py
+StandardOutput=file:/var/log/youtubedl/youtubedlOut.log
+StandardError=file:/var/log/youtubedl/youtubedlErr.log

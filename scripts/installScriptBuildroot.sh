@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+
 psplash()
 {
     printf " ----- psplash  ----- \n \n "
@@ -12,6 +14,10 @@ configure_MediaServer()
     cp /home/Downloads/LinuxEmbedded/configFiles/*.sh /opt/
     cp /home/Downloads/LinuxEmbedded/configFiles/start.service /usr/lib/systemd/system/
     systemctl enable start.service
+    unlink /etc/localtime
+    ln -s /usr/share/zoneinfo/Europe/Warsaw /etc/localtime
+    date -u
+    systemctl start start.service
 }
 
 configure_X11()
@@ -139,10 +145,6 @@ install_filemanager()
 	fi
 
 	echo "Extracting..."
-#	case "$filemanager_file" in
-#		*.zip)    unzip -o "$PREFIX/tmp/$filemanager_file" "$filemanager_bin" -d "$PREFIX/tmp/" ;;
-#		*.tar.gz) tar -xzf "$PREFIX/tmp/$filemanager_file" -C "$PREFIX/tmp/" "$filemanager_bin" ;;
-#	esac
 
         gunzip "$filemanager_file" 
         tar xf "$filemanager_file2"
@@ -169,11 +171,30 @@ install_filemanager()
 	fi
 }
 
+configure_vsftpd()
+{
+	cp /home/Downloads/LinuxEmbedded/configFiles/vsftpd/vsftpd.service /usr/lib/systemd/system/
+}
 
+install_youtubeDL()
+{
+    wget https://files.pythonhosted.org/packages/b0/20/c8ac7a62f566059f2e7812326327a648943c1837d64a66054b9f17d9aa58/youtube_dl-2020.1.15.tar.gz
+    gunzip youtube_dl-2020.1.15.tar.gz
+    tar xf youtube_dl-2020.1.15.tar
+    mv youtube_dl-2020.1.15/youtube_dl /usr/lib/python2.7/dist-packages/youtube_dl
+    rm youtube_dl-2020.1.15.tar
+    rm -rf youtube_dl-2020.1.15
+    cp /home/Downloads/LinuxEmbedded/configFiles/youtubedl/systemd-youtubedl.* /usr/lib/systemd/system/
+    cp /home/Downloads/LinuxEmbedded/scripts/downloadFromYoutube.py /opt/
+    systemctl enable systemd-youtubedl.timer
+}
 
 set -e
 #psplash
 #configure_MediaServer
 #configure_X11
 #configure_Ampache
-install_filemanager
+#install_filemanager
+#install_youtubeDL
+
+

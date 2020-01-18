@@ -189,6 +189,15 @@ install_youtubeDL()
     systemctl enable systemd-youtubedl.timer
 }
 
+configure_transmission()
+{
+    systemctl stop transmission-daemon
+    cp /home/Downloads/LinuxEmbedded/configFiles/transmission/settings.json /var/lib/transmission/.config/transmission-daemon/settings.json
+    systemctl start transmission-daemon
+
+
+}
+
 set -e
 #psplash
 #configure_MediaServer
@@ -196,5 +205,5 @@ set -e
 #configure_Ampache
 #install_filemanager
 #install_youtubeDL
-
+#configure_transmission
 

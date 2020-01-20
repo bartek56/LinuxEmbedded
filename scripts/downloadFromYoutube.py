@@ -16,13 +16,19 @@ def download_video_as_mp3(url, playlistName):
                 'preferredcodec': 'mp3',
                 'preferredquality': '192',
              }],
-        } 
+            'ignoreerrors': True
+               } 
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
 
 
 def download_video_playlist(url, playlistName):
-  results = youtube_dl.YoutubeDL({'quiet': True}).extract_info(url, download=False)
+  
+  ydl_opts = {
+          'quiet': True,
+          'ignoreerrors': True
+          }  
+  results = youtube_dl.YoutubeDL(ydl_opts).extract_info(url, download=False)
   urlList =  [i['webpage_url'] for i in results['entries']] 
   songsTitleList = [i['title'] for i in results['entries']] 
   for x in range(len(songsTitleList)): 

@@ -198,6 +198,21 @@ configure_transmission()
 
 }
 
+configure_samba()
+{
+    #systemctl stop smb.service
+    #systemctl stop nmb.service
+    systemctl disable smb.service
+    systemctl disable nmb.service
+    cp /home/Downloads/LinuxEmbedded/configFiles/Samba/smbd.service /usr/lib/systemd/system/
+    cp /home/Downloads/LinuxEmbedded/configFiles/Samba/nmbd.service /usr/lib/systemd/system/
+    cp /home/Downloads/LinuxEmbedded/configFiles/Samba/smb.conf /etc/samba/
+    systemctl enable smbd.service
+    systemctl enable nmbd.service
+    systemctl start smbd.service
+    systemctl start nmbd.service
+}
+
 set -e
 #psplash
 #configure_MediaServer
@@ -206,4 +221,4 @@ set -e
 #install_filemanager
 #install_youtubeDL
 #configure_transmission
-
+configure_samba

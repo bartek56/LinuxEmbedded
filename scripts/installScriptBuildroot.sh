@@ -213,6 +213,13 @@ configure_samba()
     systemctl start nmbd.service
 }
 
+configure_minidlna()
+{
+    systemctl stop minidlnad.service
+    cp /home/Downloads/LinuxEmbedded/configFiles/miniDLNA/minidlna.conf /etc/
+    systemctl start minidlnad.service
+}
+
 set -e
 #psplash
 #configure_MediaServer
@@ -221,4 +228,7 @@ set -e
 #install_filemanager
 #install_youtubeDL
 #configure_transmission
-configure_samba
+#configure_samba
+#configure_minidlna
+
+

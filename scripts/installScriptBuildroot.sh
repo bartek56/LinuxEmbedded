@@ -204,13 +204,13 @@ configure_samba()
     #systemctl stop nmb.service
     systemctl disable smb.service
     systemctl disable nmb.service
-    cp /home/Downloads/LinuxEmbedded/configFiles/Samba/smbd.service /usr/lib/systemd/system/
-    cp /home/Downloads/LinuxEmbedded/configFiles/Samba/nmbd.service /usr/lib/systemd/system/
+    cp /home/Downloads/LinuxEmbedded/configFiles/Samba/smbd.service /usr/lib/systemd/system/smb.service
+    cp /home/Downloads/LinuxEmbedded/configFiles/Samba/nmbd.service /usr/lib/systemd/system/nmb.service
     cp /home/Downloads/LinuxEmbedded/configFiles/Samba/smb.conf /etc/samba/
-    systemctl enable smbd.service
-    systemctl enable nmbd.service
-    systemctl start smbd.service
-    systemctl start nmbd.service
+    systemctl enable smb.service
+    systemctl enable nmb.service
+    systemctl start smb.service
+    systemctl start nmb.service
 }
 
 configure_minidlna()

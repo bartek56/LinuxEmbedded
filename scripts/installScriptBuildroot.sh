@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 psplash()
 {
     printf " ----- psplash  ----- \n \n "
@@ -194,8 +192,6 @@ configure_transmission()
     systemctl stop transmission-daemon
     cp /home/Downloads/LinuxEmbedded/configFiles/transmission/settings.json /var/lib/transmission/.config/transmission-daemon/settings.json
     systemctl start transmission-daemon
-
-
 }
 
 configure_samba()
@@ -220,6 +216,23 @@ configure_minidlna()
     systemctl start minidlnad.service
 }
 
+configure_mpd()
+{
+#    mkdir /var/lib/mpd
+#    mkdir /var/lib/mpd/playlists
+    cp /home/Downloads/LinuxEmbedded/configFiles/mpd/mpd.conf /etc/
+    cp /home/Downloads/LinuxEmbedded/configFiles/mpd/mpd.service /usr/lib/systemd/system/
+    systemctl enable mpd.service
+    systemctl start mpd.service
+    
+    cp /home/Downloads/LinuxEmbedded/configFiles/ympd/ympd.service /usr/lib/systemd/system/
+
+    systemctl enable ympd
+    systemctl start ympd
+}
+
+
+
 set -e
 #psplash
 #configure_MediaServer
@@ -230,5 +243,5 @@ set -e
 #configure_transmission
 #configure_samba
 #configure_minidlna
-
+#configure_mpd
 

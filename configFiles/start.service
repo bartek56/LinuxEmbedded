@@ -5,6 +5,8 @@ After=rc-local.service
 [Service]
 Type=forking
 ExecStart=/opt/MediaServerApp/bin/MediaServerApp
+Restart=always
+RestartSec=2
 
 [Install]
 WantedBy=multi-user.target

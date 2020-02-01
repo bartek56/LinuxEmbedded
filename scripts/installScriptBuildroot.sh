@@ -21,6 +21,7 @@ configure_MediaServer()
 {
     printf " ----- MediaServer Configuration  ----- \n\n "
     cp /home/Downloads/LinuxEmbedded/configFiles/*.sh /opt/
+    chmod 755 /opt/start*
     cp /home/Downloads/LinuxEmbedded/configFiles/start.service /usr/lib/systemd/system/
     systemctl enable start.service
     unlink /etc/localtime
@@ -207,7 +208,7 @@ install_youtubeDL()
     rm youtube_dl-2020.1.24.tar
     rm -rf youtube_dl-2020.1.24
     cp /home/Downloads/LinuxEmbedded/configFiles/youtubedl/systemd-youtubedl.* /usr/lib/systemd/system/
-    cp /home/Downloads/LinuxEmbedded/scripts/downloadFromYoutube.py /opt/
+    cp /home/Downloads/LinuxEmbedded/configFiles/youtubedl/downloadFromYoutube.py /opt/
     systemctl enable systemd-youtubedl.timer
 }
 

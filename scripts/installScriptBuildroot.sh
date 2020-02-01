@@ -6,6 +6,17 @@ psplash()
     cp /home/Downloads/LinuxEmbedded/startImage/psplash /usr/bin/
 }
 
+
+configure_kernel()
+{
+   printf " ----- Kernel configuration  ----- \n\n "
+   mkdir /boot
+   mount /dev/mmcblk0p1 /boot
+   cp /home/Downloads/LinuxEmbedded/configFiles/kernel/* /boot/
+   umount /boot
+
+}
+
 configure_MediaServer()
 {
     printf " ----- MediaServer Configuration  ----- \n\n "
@@ -15,7 +26,7 @@ configure_MediaServer()
     unlink /etc/localtime
     ln -s /usr/share/zoneinfo/Europe/Warsaw /etc/localtime
     date -u
-    systemctl start start.service
+    systemctl enable start.service
 }
 
 configure_X11()
@@ -28,18 +39,27 @@ configure_X11()
 configure_Ampache()
 {
     printf " ----- Ampache configuration  ----- \n\n "
-    wget https://github.com/ampache/ampache/archive/4.1.0.tar.gz
-    mkdir ampache
-    gunzip 4.1.0.tar.gz
-    tar -xf 4.1.0.tar -C ampache/
-    mkdir -p /usr/htdocs/ampache
-    mv ampache/ampache-4.1.0/* /usr/htdocs/ampache/
+    wget https://github.com/ampache/ampache/releases/download/4.1.0/ampache-4.1.0_all.zip
+    mkdir -p ampache
+    mv ampache-4.1.0_all.zip ampache/
+    unzip ampache-4.1.0_all.zip
+    rm ampache-4.1.0_all.zip
+    cp -r ampache /usr/htdocs/ampache
     rm -rf ampache
-    rm 4.1.0.tar
+
     cp /home/Downloads/LinuxEmbedded/website/* /usr/htdocs/
+    
     cp /usr/htdocs/ampache/play/.htaccess.dist /usr/htdocs/ampache/play/.htaccess
+    chmod 777 /usr/htdocs/ampache/play/.htaccess 
     cp /usr/htdocs/ampache/rest/.htaccess.dist /usr/htdocs/ampache/rest/.htaccess
+    chmod 777 /usr/htdocs/ampache/rest/.htaccess
+
     cp /usr/htdocs/ampache/channel/.htaccess.dist /usr/htdocs/ampache/channel/.htaccess
+    chmod 777 /usr/htdocs/ampache/channel/.htaccess
+    chmod -R 777 /usr/htdocs/ampache/config
+
+
+    cp /home/Downloads/LinuxEmbedded/configFiles/apache/php-fpm.conf /etc/php-fpm.conf
     cp /home/Downloads/LinuxEmbedded/configFiles/apache/httpd.conf /etc/apache2/httpd.conf
     cp /home/Downloads/LinuxEmbedded/configFiles/apache/apache.service /usr/lib/systemd/system/
     systemctl enable apache.service
@@ -48,7 +68,8 @@ configure_Ampache()
 
 install_filemanager()
 {
-	trap 'echo -e "Aborted, error $? in command: $BASH_COMMAND"; trap ERR; return 1' ERR
+	printf " ----- FileBrowser install  ----- \n\n "
+        trap 'echo -e "Aborted, error $? in command: $BASH_COMMAND"; trap ERR; return 1' ERR
 	filemanager_os="unsupported"
 	filemanager_arch="unknown"
 	install_path="/usr/local/bin"
@@ -171,17 +192,20 @@ install_filemanager()
 
 configure_vsftpd()
 {
+	printf " ----- vsftpd configuration  ----- \n\n "
 	cp /home/Downloads/LinuxEmbedded/configFiles/vsftpd/vsftpd.service /usr/lib/systemd/system/
+	systemctl enable vsftpd.service
 }
 
 install_youtubeDL()
 {
-    wget https://files.pythonhosted.org/packages/b0/20/c8ac7a62f566059f2e7812326327a648943c1837d64a66054b9f17d9aa58/youtube_dl-2020.1.15.tar.gz
-    gunzip youtube_dl-2020.1.15.tar.gz
-    tar xf youtube_dl-2020.1.15.tar
-    mv youtube_dl-2020.1.15/youtube_dl /usr/lib/python2.7/dist-packages/youtube_dl
-    rm youtube_dl-2020.1.15.tar
-    rm -rf youtube_dl-2020.1.15
+    printf " ----- YoutubeDL install  ----- \n\n "
+    wget https://files.pythonhosted.org/packages/1e/c7/8f0b6cb38fd9c44adb7c612c2f83bb0a53f04a82a29165f19c320ff4c243/youtube_dl-2020.1.24.tar.gz
+    gunzip youtube_dl-2020.1.24.tar.gz
+    tar xf youtube_dl-2020.1.24.tar
+    mv youtube_dl-2020.1.24/youtube_dl /usr/lib/python2.7/youtube_dl
+    rm youtube_dl-2020.1.24.tar
+    rm -rf youtube_dl-2020.1.24
     cp /home/Downloads/LinuxEmbedded/configFiles/youtubedl/systemd-youtubedl.* /usr/lib/systemd/system/
     cp /home/Downloads/LinuxEmbedded/scripts/downloadFromYoutube.py /opt/
     systemctl enable systemd-youtubedl.timer
@@ -189,6 +213,7 @@ install_youtubeDL()
 
 configure_transmission()
 {
+    printf " ----- transmission (Torrent Client) configuration  ----- \n\n "
     systemctl stop transmission-daemon
     cp /home/Downloads/LinuxEmbedded/configFiles/transmission/settings.json /var/lib/transmission/.config/transmission-daemon/settings.json
     systemctl start transmission-daemon
@@ -196,8 +221,9 @@ configure_transmission()
 
 configure_samba()
 {
-    #systemctl stop smb.service
-    #systemctl stop nmb.service
+    printf " ----- Samba configuration  ----- \n\n "
+    systemctl stop smb.service
+    systemctl stop nmb.service
     systemctl disable smb.service
     systemctl disable nmb.service
     cp /home/Downloads/LinuxEmbedded/configFiles/Samba/smbd.service /usr/lib/systemd/system/smb.service
@@ -205,12 +231,11 @@ configure_samba()
     cp /home/Downloads/LinuxEmbedded/configFiles/Samba/smb.conf /etc/samba/
     systemctl enable smb.service
     systemctl enable nmb.service
-    systemctl start smb.service
-    systemctl start nmb.service
 }
 
 configure_minidlna()
 {
+    printf " ----- MiniDLNA configuration  ----- \n\n "
     systemctl stop minidlnad.service
     cp /home/Downloads/LinuxEmbedded/configFiles/miniDLNA/minidlna.conf /etc/
     systemctl start minidlnad.service
@@ -218,8 +243,9 @@ configure_minidlna()
 
 configure_mpd()
 {
-#    mkdir /var/lib/mpd
-#    mkdir /var/lib/mpd/playlists
+    printf " ----- MPD configuration  ----- \n\n "
+    mkdir /var/lib/mpd
+    mkdir /var/lib/mpd/playlists
     cp /home/Downloads/LinuxEmbedded/configFiles/mpd/mpd.conf /etc/
     cp /home/Downloads/LinuxEmbedded/configFiles/mpd/mpd.service /usr/lib/systemd/system/
     systemctl enable mpd.service
@@ -235,10 +261,12 @@ configure_mpd()
 
 set -e
 #psplash
+#configure_kernel
 #configure_MediaServer
 #configure_X11
 #configure_Ampache
 #install_filemanager
+#configure_vsftpd
 #install_youtubeDL
 #configure_transmission
 #configure_samba

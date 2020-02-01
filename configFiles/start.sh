@@ -12,6 +12,6 @@ while kill -0 $pid 2> /dev/null; do
 done
 
 echo "killed"
-/opt/MediaServerApp/bin/MediaServerApp
+/usr/bin/MediaServer
 exit 1
 

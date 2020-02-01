@@ -4,7 +4,7 @@ After=rc-local.service
 
 [Service]
 Type=forking
-ExecStart=/opt/MediaServerApp/bin/MediaServerApp
+ExecStart=/usr/bin/MediaServer
 Restart=always
 RestartSec=2
 

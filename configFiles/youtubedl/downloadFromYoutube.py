@@ -13,6 +13,7 @@ PATH='/mnt/TOSHIBA EXT/muzyka/Youtube list/'
 
 def convert_song_name(songName):
     songName = songName.replace("(Official Video)", "")
+    songName = songName.replace("( Official Video )", "")
     songName = songName.replace("(Official Video HD)", "")
     songName = songName.replace("[Official Video]", "")
     songName = songName.replace("Official Video", "")
@@ -66,10 +67,11 @@ def add_metadata(playlistName, songName):
           metatag['artist'] = slots[0]
           metatag['title'] = slots[1]
           info = " " + slots[0] + " " + slots[1]
+        else:  
+          metatag['title'] = songName
 
-      print "[ID3] Adding metadata: " + albumName + info   
       metatag.save()
-
+      print "[ID3] Added metadata"
 
 def download_video_as_mp3(url, playlistName, songName):
     path=PATH+playlistName

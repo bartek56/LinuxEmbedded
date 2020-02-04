@@ -48,13 +48,16 @@ def convert_song_name(songName):
 
 def add_metadata(playlistName, songName):
     fileName=songName+".mp3"
-    audio = MP3(PATH+playlistName+'/'+fileName, ID3=EasyID3)
+    path=PATH+playlistName
+    audio = MP3(path+'/'+fileName, ID3=EasyID3)
     result = audio.pprint()
     albumName="YT "+playlistName
     if(albumName not in result):
+      trackNumber = len([f for f in os.listdir(path) if f.endswith('.mp3')])
+      trackNumber += 1
       metatag = EasyID3(PATH+playlistName+'/'+fileName)
       metatag['album'] = albumName
-      
+      metatag['tracknumber'] = str(trackNumber)
       slots = songName.split(" - ")
       info = " "
       if len(slots) == 2:
@@ -93,20 +96,20 @@ def download_video_as_mp3(url, playlistName, songName):
 def download_video_playlist(url, playlistName):
   
   ydl_opts = {
+#          'playlist-start': 5,
           'quiet': True,
           'ignoreerrors': True
           }  
   results = youtube_dl.YoutubeDL(ydl_opts).extract_info(url, download=False)
   urlList =  [i['webpage_url'] for i in results['entries']] 
   songsTitleList = [i['title'] for i in results['entries']] 
+#  playlistIndexList =  [i['playlist_index'] for i in results['entries']]
   for x in range(len(songsTitleList)): 
      songName = songsTitleList[x]
      songName = convert_song_name(songName)
      fileName = songName+".mp3"
-
      download_video_as_mp3(urlList[x], playlistName, songName)
      add_metadata(playlistName, songName)
-
      
 def main():
    now = datetime.now()

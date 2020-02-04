@@ -1,0 +1,8 @@
+[Unit]
+Description=Ampache update
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/php /usr/htdocs/ampache/bin/catalog_update.inc
+StandardOutput=file:/var/log/ampacheOut.log
+StandardError=file:/var/log/ampacheErr.log

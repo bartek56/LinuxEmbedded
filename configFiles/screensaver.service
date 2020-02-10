@@ -1,0 +1,11 @@
+[Unit]
+Description=ScrenSaver - feh
+After=rc-local.service
+
+[Service]
+ExecStart=/usr/bin/bash /opt/startScreensaver.sh
+
+ExecStop=/usr/bin/systemctl start start
+
+[Install]
+WantedBy=multi-user.target

@@ -3,7 +3,6 @@ Description=MediaServer App
 After=rc-local.service
 
 [Service]
-Type=forking
 ExecStart=/usr/bin/MediaServer
 Restart=always
 RestartSec=2

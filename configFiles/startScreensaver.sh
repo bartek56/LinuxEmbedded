@@ -1,13 +1,15 @@
 #!/bin/bash
-timeout='6'
-path='/home/pictures/rower'
-startTime='360000'
+timeout='8'
+path='/home/Pictures/tapety'
+startTime='120000'
 random='-z'
 
-pid="$@"
-echo $pid
 
-sleep 2
+xinit -- -nocursor &
+
+export pid1=$!
+
+sleep 1
 DISPLAY=:0 feh "$random" -F -D"$timeout" -x "$path" &
 export pid2=$!
 echo $pid2
@@ -20,8 +22,8 @@ while kill -0 $pid2 2> /dev/null; do
  sleep 2
 done
 
-kill $pid
+kill $pid1
 
 echo "killed"
-/opt/MediaServerApp/bin/MediaServerApp
+systemctl start start
 exit 1

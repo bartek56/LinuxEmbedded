@@ -1,0 +1,10 @@
+[Unit]
+Description=GQView - Graphic X11 Pictures viewer
+After=rc-local.service
+
+[Service]
+ExecStart=/usr/bin/xinit /usr/bin/gqview -- -nocursor
+ExecStop=/usr/bin/systemctl start start
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,10 @@
+[Unit]
+Description=Graphic MPD Client
+After=rc-local.service
+
+[Service]
+ExecStart=/usr/bin/xinit /usr/bin/gmpc -- -nocursor
+ExecStop=/usr/bin/systemctl start start
+
+[Install]
+WantedBy=multi-user.target

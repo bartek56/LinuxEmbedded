@@ -3,7 +3,7 @@
 
 sleep 1
 
-/usr/lib/qt/examples/webengine/quicknanobrowser/quicknanobrowser&
+/usr/lib/qt/examples/multimediawidgets/player/player&
 export pid=$!
 echo $pid
 
@@ -15,6 +15,6 @@ while kill -0 $pid 2> /dev/null; do
 done
 
 echo "killed"
-/opt/MediaServerApp/bin/MediaServerApp
+/usr/bin/MediaServer
 
 

@@ -25,5 +25,6 @@ done
 kill $pid1
 
 echo "killed"
-systemctl start start
-exit 1
+systemctl stop screensaver
+
+

@@ -1,13 +1,16 @@
 #/bin/bash
-sleepTime=10
-minVolume=10
-maxVolume=80
-volumeJump=10
+minVolume=26
+maxVolume=70
+growingVolume=16
+growingSpeed=11
+playlist=""
+theNewestSongs=true
+
 
 set -e
 
 mpc --wait clear
-mpc --wait load alarm
+mpc --wait load $playlist
 mpc --wait random on
 mpc volume $minVolume
 mpc play
@@ -15,7 +18,7 @@ mpc play
 start=true
 
 echo "start"
-sleep $sleepTime
+sleep $growingSpeed
 
 while true ; do
     result=$(mpc volume)
@@ -26,10 +29,10 @@ while true ; do
 	echo "MAX VALUE"
     fi   
     if [ "$start" == true ]; then
-        result=$(mpc volume +$volumeJump)
+        result=$(mpc volume +$growingVolume)
         echo $result
     fi
 
-    sleep $sleepTime
+    sleep $growingSpeed
 done
 

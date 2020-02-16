@@ -1,17 +1,41 @@
 #/bin/bash
-minVolume=26
-maxVolume=70
-growingVolume=16
-growingSpeed=11
-playlist=""
-theNewestSongs=true
+minVolume=30
+maxVolume=90
+defaultVolume=40
+growingVolume=10
+growingSpeed=20
+playlist="alarm"
+theNewestSongs=false
 
 
 set -e
+IFS=$'\n'
 
-mpc --wait clear
-mpc --wait load $playlist
-mpc --wait random on
+#$(ls /mnt/TOSHIBA\ EXT/muzyka/Youtube\ list/  -lRt -1 | grep .mp3 | sort -k6 -r | awk '{for(i=9; i<=NF; ++i) printf "%s ", $i; print ""}' | head -n 10)
+
+if [ "$theNewestSongs" == true ]; then
+    countSongs=0
+    lastDays=0
+
+    while [ $countSongs -le 10 ]; do
+ 	lastDays=$((lastDays + 1))
+        echo $lastDays
+	countSongs=$(find "/mnt/TOSHIBA EXT/muzyka/Youtube list" -type f -mtime -$lastDays -name "*.mp3" | wc -l)
+        echo $countSongs
+    done
+
+    musicList=$(find "/mnt/TOSHIBA EXT/muzyka/Youtube list" -type f -mtime -$lastDays -name "*.mp3" -exec basename '{}' ';' | head -n 10 )
+   
+    mpc --wait clear
+    for songName in $musicList; do
+        mpc --wait listall | grep $songName | mpc add
+    done
+else 
+    mpc clear
+    mpc --wait load $playlist
+fi
+
+mpc random on
 mpc volume $minVolume
 mpc play
 

@@ -2,7 +2,7 @@
 Description=Alarm
 
 [Timer]
-OnCalendar=*-*-* 07:00:00
+OnCalendar=Mon,Tue,Wed,Thu,Fri 06:35
 
 [Install]
 WantedBy=multi-user.target

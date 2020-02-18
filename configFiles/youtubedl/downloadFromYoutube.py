@@ -9,7 +9,7 @@ from mutagen.mp3 import MP3
 
 PATH='/mnt/TOSHIBA EXT/muzyka/Youtube list/'
 
-def rename_song(songName):
+def convert_song_name(songName):
     songName = songName.replace("(Official Video)", "")
     songName = songName.replace("( Official Video )", "")
     songName = songName.replace("(Official Video HD)", "")
@@ -43,8 +43,8 @@ def rename_song(songName):
     songName = songName.replace("/", " ")
     return songName
 
-def convert_song_name(songName):
-    songName = rename_song(songName)
+def rename_song_name(songName):
+    songName = convert_song_name(songName)
     songName = songName+".xyz"
     songName = songName.replace("  .xyz", ".xyz")
     songName = songName.replace(" .xyz", ".xyz")
@@ -55,7 +55,7 @@ def rename_song_file(path, fileName):
 
     originalFileName = fileName 
     
-    fileName = rename_song(fileName)
+    fileName = convert_song_name(fileName)
 
     fileName = fileName.replace("  .mp3", ".mp3")
     fileName = fileName.replace(" .mp3", ".mp3")
@@ -98,7 +98,7 @@ def update_metadata(playlistName):
       path=PATH+playlistName
       albumName="YT "+playlistName
 
-      filesList = [f for f in os.listdir(path) if f.endswith('.mp3')]
+      filesList = [f for f in os.listdir(path) if f.endswith(".mp3")]
       for x in range(len(filesList)):
         originalFileName = filesList[x]
 
@@ -107,7 +107,7 @@ def update_metadata(playlistName):
         
         metadataSongName = convert_songname_on_metadata(newSongName)
         newFileNameWithPath = os.path.join(path, newFileName)
-
+        
         metatag = EasyID3(newFileNameWithPath)
         metatag['album'] = albumName
         metatag['artist'] = metadataSongName['artist']
@@ -117,22 +117,26 @@ def update_metadata(playlistName):
 
 def add_metadata(trackNumber, playlistName, songName):
       path=PATH+playlistName
-      fileName=songName+".mp3"
-#      fileNameWithPath = os.path.join(path, fileName)
-#      metadataID = EasyID3(path+'/'+fileName)
-      metadataSongName = convert_songname_on_metadata(songName)
-
-      audio = MP3(PATH+playlistName+'/'+fileName, ID3=EasyID3)
-      result = audio.pprint()
       albumName="YT "+playlistName
-#    if(albumName not in result):
-      metatag = EasyID3(PATH+playlistName+'/'+fileName)
-      metatag['album'] = albumName
-      metatag['tracknumber'] = str(trackNumber)
-      metatag['artist'] = metadataSongName['artist']
-      metatag['title'] = metadataSongName['title']
-      metatag.save()
-      print "[ID3] Added metadata"
+
+      filesList = [f for f in os.listdir(path) if f.startswith(songName)]
+      for x in range(len(filesList)):
+        originalFileName = filesList[x]
+
+        newFileName = rename_song_file(path, originalFileName)
+        newSongName = newFileName.replace(".mp3", "")
+        
+        metadataSongName = convert_songname_on_metadata(newSongName)
+        newFileNameWithPath = os.path.join(path, newFileName)
+        
+        metatag = EasyID3(newFileNameWithPath)
+        metatag['album'] = albumName
+        metatag['artist'] = metadataSongName['artist']
+        metatag['title'] = metadataSongName['title']
+        metatag['tracknumber'] = str(trackNumber)
+        metatag.save()
+        print "[ID3] Added metadata"
+
         
 def download_video_playlist(url, playlistName):
   path=PATH+playlistName
@@ -141,7 +145,7 @@ def download_video_playlist(url, playlistName):
   trackNumber = len([f for f in os.listdir(path) if f.endswith('.mp3')])
 
   ydl_opts = {
-          'ignoreerrors': True, 
+
           'format': 'bestaudio/best',
           'download_archive': path+'/downloaded_songs.txt',
           'addmetadata': True,
@@ -150,21 +154,18 @@ def download_video_playlist(url, playlistName):
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
                 'preferredquality': '192',
-             }]
-#          'playlist-start': 8
+             }],
+          'ignoreerrors': True
+#'playlist-start': 8
           }  
   results = youtube_dl.YoutubeDL(ydl_opts).extract_info(url)
   
-#  with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-#        results = ydl.extract_info(url)
-
   songsTitleList = [i['title'] for i in results['entries']]
+  playlistIndexList = [i['playlist_index'] for i in results['entries']]
   for x in range(len(songsTitleList)):
      songName = songsTitleList[x]
-     songName = convert_song_name(songName)
      trackNumber+=1
-     add_metadata(trackNumber, playlistName, songName)
-     
+     add_metadata(playlistIndexList[x], playlistName, songName)
 
 
 def main():
@@ -172,34 +173,34 @@ def main():
    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
    print("---------  " + dt_string + "  ---------") 
 
-   #update_metadata("muzyka filmowa")
+#   update_metadata("muzyka filmowa")
 
 #  PART 1
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiCtXJW-I0OASdxMc7sGHn5", "chillout")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgHTfI_P_BaACTGN2Km_4Yk", "Bachata")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjahtnJWMf2cW6TDmpfTUqk", "spokojne-sad")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjKkH06p81TLmGItIfoMnb5", "relaks")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfi6xtpV-Di4Hgf3qCHiScyU", "Kizomba")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiB-7Td9IIYbYM0DsPjxAt0", "imprezka")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfi2UzQtyRhB4zVClwJlzuHD", "Reggae")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiCtXJW-I0OASdxMc7sGHn5", "chillout")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgHTfI_P_BaACTGN2Km_4Yk", "Bachata")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjahtnJWMf2cW6TDmpfTUqk", "spokojne-sad")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjKkH06p81TLmGItIfoMnb5", "relaks")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfi6xtpV-Di4Hgf3qCHiScyU", "Kizomba")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiB-7Td9IIYbYM0DsPjxAt0", "imprezka")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfi2UzQtyRhB4zVClwJlzuHD", "Reggae")
 
 
 #  PART 2
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgDX6QR1isPJEUNkWRbPa0e", "polskie hity")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgMkKYQ8zK1wPzLE7nuYbYk", "stare ale jare")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgDX6QR1isPJEUNkWRbPa0e", "polskie hity")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgMkKYQ8zK1wPzLE7nuYbYk", "stare ale jare")
    download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfg4ur-Bk9PCdqguhKoHCfMD", "muzyka filmowa")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgcWvb2c97oOX773DQHnhjQ", "wesele stare hity")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh09hGVx2_RreHvFmenLMma", "wesele pop")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjJaHNCH5XacdQdGOOCjuej", "wesele disco-polo")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjIGBN67_y2HEUx3lAjLGih", "wesele impreza")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgXRVUHpk-nhxfY4PmNMQp5", "electro Swing")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfhPdw0tTOp-k2WGWkScw6pU", "hip-hop")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiC8LyEB92IEsBFlbBjxCj0", "techno")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh6_5dWYpBB9bGVIKctGT2Y", "muzyka klasyczna")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh9AqFWYPJ-AIQag25aa6nL", "taniec")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfi5RcPXcTSqnkHN6En7URPS", "salsa")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgRcnKrIsUXb2lEfknbLBWX", "Semba")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiYtX-sgGsQDKbSOuvNZnrj", "Bachata Dominikana")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgcWvb2c97oOX773DQHnhjQ", "wesele stare hity")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh09hGVx2_RreHvFmenLMma", "wesele pop")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjJaHNCH5XacdQdGOOCjuej", "wesele disco-polo")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjIGBN67_y2HEUx3lAjLGih", "wesele impreza")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgXRVUHpk-nhxfY4PmNMQp5", "electro Swing")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfhPdw0tTOp-k2WGWkScw6pU", "hip-hop")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiC8LyEB92IEsBFlbBjxCj0", "techno")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh6_5dWYpBB9bGVIKctGT2Y", "muzyka klasyczna")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh9AqFWYPJ-AIQag25aa6nL", "taniec")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfi5RcPXcTSqnkHN6En7URPS", "salsa")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgRcnKrIsUXb2lEfknbLBWX", "Semba")
+   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiYtX-sgGsQDKbSOuvNZnrj", "Bachata Dominikana")
    
 
 #   download_video_playlist("", "")

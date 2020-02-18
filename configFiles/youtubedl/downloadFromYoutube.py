@@ -7,13 +7,14 @@ from mutagen.easyid3 import EasyID3
 from mutagen.mp3 import MP3
 
 
-PATH='/mnt/TOSHIBA EXT/muzyka/Youtube list/'
+PATH='/tmp/muzyka/Youtube list/'
 
 def convert_song_name(songName):
     songName = songName.replace("(Official Video)", "")
     songName = songName.replace("( Official Video )", "")
     songName = songName.replace("(Official Video HD)", "")
     songName = songName.replace("[Official Video]", "")
+    songName = songName.replace("[OFFICIAL VIDEO]", "")
     songName = songName.replace("Official Video", "")
     songName = songName.replace("(OFFICIAL VIDEO)", "")
     songName = songName.replace("(Video Official)", "")
@@ -25,7 +26,6 @@ def convert_song_name(songName):
     songName = songName.replace("[Official Music Video]", "")
   
     songName = songName.replace("(Oficial Video)", "")
-    songName = songName.replace("(Oficial Video HD)", "")
     songName = songName.replace("[Oficial Video]", "")
     songName = songName.replace("Oficial Video", "")
     songName = songName.replace("(OFICIAL VIDEO)", "")
@@ -45,10 +45,7 @@ def convert_song_name(songName):
 
 def rename_song_name(songName):
     songName = convert_song_name(songName)
-    songName = songName+".xyz"
-    songName = songName.replace("  .xyz", ".xyz")
-    songName = songName.replace(" .xyz", ".xyz")
-    songName = songName.replace(".xyz", "")
+    songName = songName.lstrip()
     return songName
 
 def rename_song_file(path, fileName):
@@ -113,7 +110,9 @@ def update_metadata(playlistName):
         metatag['artist'] = metadataSongName['artist']
         metatag['title'] = metadataSongName['title']
         metatag.save()
-        print "[ID3] Updated metadata"
+        print "[ID3] updated metadata from YouTube"
+        audio = MP3(newFileNameWithPath, ID3=EasyID3)
+        print audio.pprint()
 
 def add_metadata(trackNumber, playlistName, songName):
       path=PATH+playlistName
@@ -136,16 +135,49 @@ def add_metadata(trackNumber, playlistName, songName):
         metatag['tracknumber'] = str(trackNumber)
         metatag.save()
         print "[ID3] Added metadata"
+        audio = MP3(newFileNameWithPath, ID3=EasyID3)
+        print audio.pprint()
 
-        
-def download_video_playlist(url, playlistName):
+def update_metadata_from_YTplaylist(url, playlistName):
   path=PATH+playlistName
+  albumName="YT "+playlistName
   if not os.path.exists(path):
     os.makedirs(path)
   trackNumber = len([f for f in os.listdir(path) if f.endswith('.mp3')])
 
   ydl_opts = {
+          'addmetadata': True,
+#'playlist-start': 8
+          }  
+  results = youtube_dl.YoutubeDL(ydl_opts).extract_info(url,download=False)
+  
+  playlistIndexList = [i['playlist_index'] for i in results['entries']]
+  songsTitleList = [i['title'] for i in results['entries']]
+  for x in range(len(songsTitleList)):
+     songName = songsTitleList[x]
+     mp3ext=".mp3"
+     fileName="%s%s"%(songName,mp3ext)
 
+     newFileName = rename_song_file(path, fileName)
+     newSongName = newFileName.replace(".mp3", "")    
+     metadataSongName = convert_songname_on_metadata(newSongName)
+     newFileNameWithPath = os.path.join(path, newFileName)    
+     metatag = EasyID3(newFileNameWithPath)
+     metatag['album'] = albumName
+     metatag['artist'] = metadataSongName['artist']
+     metatag['title'] = metadataSongName['title']
+     metatag['tracknumber'] = str(trackNumber)
+     metatag.save()
+     print "[ID3] updated metadata from YouTube"
+     audio = MP3(newFileNameWithPath, ID3=EasyID3)
+     print audio.pprint()
+
+def download_video_playlist(url, playlistName):
+  path=PATH+playlistName
+  if not os.path.exists(path):
+    os.makedirs(path)
+
+  ydl_opts = {
           'format': 'bestaudio/best',
           'download_archive': path+'/downloaded_songs.txt',
           'addmetadata': True,
@@ -164,7 +196,6 @@ def download_video_playlist(url, playlistName):
   playlistIndexList = [i['playlist_index'] for i in results['entries']]
   for x in range(len(songsTitleList)):
      songName = songsTitleList[x]
-     trackNumber+=1
      add_metadata(playlistIndexList[x], playlistName, songName)
 
 
@@ -172,8 +203,6 @@ def main():
    now = datetime.now()
    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
    print("---------  " + dt_string + "  ---------") 
-
-#   update_metadata("muzyka filmowa")
 
 #  PART 1
    download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiCtXJW-I0OASdxMc7sGHn5", "chillout")
@@ -201,7 +230,12 @@ def main():
    download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfi5RcPXcTSqnkHN6En7URPS", "salsa")
    download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgRcnKrIsUXb2lEfknbLBWX", "Semba")
    download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiYtX-sgGsQDKbSOuvNZnrj", "Bachata Dominikana")
-   
+
+
+
+#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh4YsbxgPE70a6KeFOCDgG_", "test")
+#   update_metadata("test")
+#   update_metadata_from_YTplaylist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh4YsbxgPE70a6KeFOCDgG_", "test")
 
 #   download_video_playlist("", "")
 

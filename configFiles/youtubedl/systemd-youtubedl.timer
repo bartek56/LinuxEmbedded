@@ -2,7 +2,7 @@
 Description=Update songs from YouTube
 
 [Timer]
-OnCalendar=*-*-* 01:30:00
+OnCalendar=*-*-* 04:30:00
 
 [Install]
 WantedBy=multi-user.target

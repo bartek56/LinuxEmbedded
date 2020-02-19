@@ -3,6 +3,8 @@ Description=Ampache update
 
 [Service]
 Type=oneshot
+ExecStartPre=/usr/bin/rm -f /var/log/ampacheOut.log
+ExecStartPre=/usr/bin/rm -f /var/log/ampacheErr.log
 ExecStart=/usr/bin/php /usr/htdocs/ampache/bin/catalog_update.inc
 StandardOutput=file:/var/log/ampacheOut.log
 StandardError=file:/var/log/ampacheErr.log

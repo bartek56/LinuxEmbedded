@@ -128,7 +128,7 @@ def update_metadata(playlistName):
         newFileNameWithPath = os.path.join(path, newFileName)
         if not os.path.isfile(newFileNameWithPath):
             warningInfo="WARNING: %s not exist"%(newFileName)
-            warnings.warn(bcolors.WARNING + warningInfo + bcolors.ENDC, Warning)
+            warnings.warn(warningInfo, Warning)
             print bcolors.WARNING + warningInfo + bcolors.ENDC
             continue
         metatag = EasyID3(newFileNameWithPath)
@@ -183,7 +183,12 @@ def update_metadata_from_YTplaylist(url, playlistName):
 #'playlist-start': 8
           }  
   results = youtube_dl.YoutubeDL(ydl_opts).extract_info(url,download=False)
-  
+  if not results:
+     warningInfo="ERROR: not extract_info in results"
+     warnings.warn(warningInfo, Warning)
+     print bcolors.FAIL + warningInfo + bcolors.ENDC
+     return
+ 
   playlistIndexList = [i['playlist_index'] for i in results['entries']]
   songsTitleList = [i['title'] for i in results['entries']]
   for x in range(len(songsTitleList)):
@@ -235,9 +240,16 @@ def download_video_playlist(url, playlistName):
 #'playlist-start': 8
           }  
   results = youtube_dl.YoutubeDL(ydl_opts).extract_info(url)
-  
+
+  if not results:
+     warningInfo="ERROR: not extract_info in results"
+     print bcolors.FAIL + warningInfo + bcolors.ENDC
+     return
+
+
   songsTitleList = [i['title'] for i in results['entries']]
   playlistIndexList = [i['playlist_index'] for i in results['entries']]
+
   for x in range(len(songsTitleList)):
      songName = songsTitleList[x]
      add_metadata(playlistIndexList[x], playlistName, songName)
@@ -256,6 +268,7 @@ def main():
 #   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfi6xtpV-Di4Hgf3qCHiScyU", "Kizomba")
 #   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiB-7Td9IIYbYM0DsPjxAt0", "imprezka")
 #   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfi2UzQtyRhB4zVClwJlzuHD", "Reggae")
+#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiC8LyEB92IEsBFlbBjxCj0", "techno")
 
 
 #  PART 2
@@ -268,7 +281,6 @@ def main():
 #   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjIGBN67_y2HEUx3lAjLGih", "wesele impreza")
 #   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgXRVUHpk-nhxfY4PmNMQp5", "electro Swing")
 #   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfhPdw0tTOp-k2WGWkScw6pU", "hip-hop")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiC8LyEB92IEsBFlbBjxCj0", "techno")
 #   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh6_5dWYpBB9bGVIKctGT2Y", "muzyka klasyczna")
 #   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh9AqFWYPJ-AIQag25aa6nL", "taniec")
 #   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfi5RcPXcTSqnkHN6En7URPS", "salsa")
@@ -278,9 +290,12 @@ def main():
 
 #   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh4YsbxgPE70a6KeFOCDgG_", "test")
 #   update_metadata("test")
-   update_metadata_from_YTplaylist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh4YsbxgPE70a6KeFOCDgG_", "test")
+#   update_metadata_from_YTplaylist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh4YsbxgPE70a6KeFOCDgG_", "test")
 
 #   download_video_playlist("", "")
+   now = datetime.now()
+   dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+   print("---------  " + dt_string + "  ---------") 
 
    print ("Finished\n\n")
     

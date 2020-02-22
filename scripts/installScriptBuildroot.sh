@@ -1,5 +1,7 @@
 #!/bin/bash
 
+PATH=/home/Downloads/LinuxEmbedded/
+
 psplash()
 {
     printf " ----- psplash  ----- \n \n "
@@ -195,7 +197,15 @@ configure_vsftpd()
 {
 	printf " ----- vsftpd configuration  ----- \n\n "
 	cp /home/Downloads/LinuxEmbedded/configFiles/vsftpd/vsftpd.service /usr/lib/systemd/system/
+	cp PATH+configFiles/vsftpd/
+	cp /home/Downloads/LinuxEmbedded/configFiles/vsftpd/pam_pwdfile.so /usr/lib/security/
+	cp /home/Downloads/LinuxEmbedded/configFiles/vsftpd/vsftpd.config /etc/
+  cp -r /home/Downloads/LinuxEmbedded/configFiles/vsftpd/vsftpd_user_conf /etc/
+	mkdir -p /etc/vsftpd
+  cp /home/Downloads/LinuxEmbedded/configFiles/vsftpd/ftpd.passwd /etc/vsftpd/
+  adduser -h /home/vsftpd -G nogroup -D -s /bin/false vsftpd
 	systemctl enable vsftpd.service
+	systemctl start vsftpd.service
 }
 
 install_youtubeDL()

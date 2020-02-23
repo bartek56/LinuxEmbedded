@@ -268,6 +268,15 @@ configure_mpd()
     systemctl start ympd
 }
 
+configure_bluetooth()
+{
+    printf " ----- Bluetooth configuration  ----- \n\n "
+    cp /home/Downloads/LinuxEmbedded/configFiles/bluetooth/*.service /usr/lib/systemd/system/
+    systemctl enable bluealsa.service
+    systemctl start bluealsa.service
+    systemctl enable bluealsa-aplay.service
+		systemctl start bluealsa-aplay.service
+}
 
 
 set -e
@@ -283,4 +292,4 @@ set -e
 #configure_samba
 #configure_minidlna
 #configure_mpd
-
+#configure_bluetooth

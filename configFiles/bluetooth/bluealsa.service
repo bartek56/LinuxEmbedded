@@ -1,0 +1,10 @@
+[Unit]
+Description=BlueAlsa A2DP
+After=bluetooth.service
+
+[Service]
+ExecStartPre=/usr/bin/bt-adapter --set Powered on
+ExecStart=/usr/bin/bluealsa -p a2dp-sink
+Restart=always
+[Install]
+WantedBy=multi-user.target

@@ -51,8 +51,6 @@ def convert_song_name(songName):
     songName = songName.replace("[Official Audio]", "")
 
     songName = songName.replace("(Official Music Video)", "")
-    songName = songName.replace("/", "_")
-    songName = songName.replace("|", "_")
     songName = songName.replace("  ", " ")   
     songName = songName.replace("  ", " ")   
     return songName
@@ -146,13 +144,21 @@ def add_metadata(trackNumber, playlistName, songName):
       albumName="YT "+playlistName
 
       filesList = [f for f in os.listdir(path) if f.startswith(songName)]
+      if len(filesList) is 0:
+        warningInfo="WARNING: %s not exist"%(originalFileName)
+        print bcolors.WARNING + warningInfo + bcolors.ENDC
+
       for x in range(len(filesList)):
         originalFileName = filesList[x]
+        
         if not os.path.isfile(os.path.join(path, originalFileName)):
-            warningInfo="WARNING: %s not exist"%(originalFileName)
-            warnings.warn(bcolors.WARNING + warningInfo + bcolors.ENDC, Warning)
-            print bcolors.WARNING + warningInfo + bcolors.ENDC
-            continue
+            originalFileName = originalFileName.replace("/", "_")
+            originalFileName = originalFileName.replace("|", "_")
+            originalFileName = originalFileName.replace("\"", "'")
+            if not os.path.isfile(os.path.join(path, originalFileName)):
+                warningInfo="WARNING: %s not exist"%(filesList[x])
+                print bcolors.WARNING + warningInfo + bcolors.ENDC
+                continue
 
         newFileName = rename_song_file(path, originalFileName)
         newSongName = newFileName.replace(".mp3", "")
@@ -180,12 +186,10 @@ def update_metadata_from_YTplaylist(url, playlistName):
 
   ydl_opts = {
           'addmetadata': True,
-#'playlist-start': 8
           }  
   results = youtube_dl.YoutubeDL(ydl_opts).extract_info(url,download=False)
   if not results:
      warningInfo="ERROR: not extract_info in results"
-     warnings.warn(warningInfo, Warning)
      print bcolors.FAIL + warningInfo + bcolors.ENDC
      return
  
@@ -196,17 +200,21 @@ def update_metadata_from_YTplaylist(url, playlistName):
      trackNumber = playlistIndexList[x]
      mp3ext=".mp3"
      fileName="%s%s"%(songName,mp3ext)
-     if os.path.isfile(os.path.join(path, fileName)):
+     
+     if not os.path.isfile(os.path.join(path, fileName)):
+         songName = songName.replace("/", "_")
+         songName = songName.replace("|", "_")
+         songName = songName.replace("\"", "'")
+         fileName="%s%s"%(songName,mp3ext)
+
+     if not os.path.isfile(os.path.join(path, fileName)):
          fileName = rename_song_file(path, fileName)
          songName = fileName.replace(".mp3","")
-     else:
-         songName = rename_song_name(songName)
-         fileName="%s%s"%(songName,mp3ext)
-         if not os.path.isfile(os.path.join(path, fileName)):
-             warningInfo="WARNING: %s not exist"%(fileName)
-             warnings.warn(warningInfo, Warning)
-             print bcolors.WARNING + warningInfo + bcolors.ENDC
-             continue
+     
+     if not os.path.isfile(os.path.join(path, fileName)):
+         warningInfo="WARNING: %s not exist"%(fileName)
+         print bcolors.WARNING + warningInfo + bcolors.ENDC
+         continue
 
      metadataSongName = convert_songname_on_metadata(songName)
      fileNameWithPath = os.path.join(path, fileName)    
@@ -237,10 +245,8 @@ def download_video_playlist(url, playlistName):
                 'preferredquality': '192',
              }],
           'ignoreerrors': True
-#'playlist-start': 8
           }  
   results = youtube_dl.YoutubeDL(ydl_opts).extract_info(url)
-
   if not results:
      warningInfo="ERROR: not extract_info in results"
      print bcolors.FAIL + warningInfo + bcolors.ENDC
@@ -249,55 +255,59 @@ def download_video_playlist(url, playlistName):
 
   songsTitleList = [i['title'] for i in results['entries']]
   playlistIndexList = [i['playlist_index'] for i in results['entries']]
-
+  songCounter=0
   for x in range(len(songsTitleList)):
      songName = songsTitleList[x]
      add_metadata(playlistIndexList[x], playlistName, songName)
-
+     songCounter+=1
+  
+  info = "[INFO] downloaded  %s songs"%(songCounter)
+  print bcolors.OKGREEN + info + bcolors.ENDC
+  return songCounter
 
 def main():
+   songsCounter = 0
    now = datetime.now()
    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
    print("---------  " + dt_string + "  ---------") 
 
 #  PART 1
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiCtXJW-I0OASdxMc7sGHn5", "chillout")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgHTfI_P_BaACTGN2Km_4Yk", "Bachata")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjahtnJWMf2cW6TDmpfTUqk", "spokojne-sad")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjKkH06p81TLmGItIfoMnb5", "relaks")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfi6xtpV-Di4Hgf3qCHiScyU", "Kizomba")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiB-7Td9IIYbYM0DsPjxAt0", "imprezka")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfi2UzQtyRhB4zVClwJlzuHD", "Reggae")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiC8LyEB92IEsBFlbBjxCj0", "techno")
-
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiCtXJW-I0OASdxMc7sGHn5", "chillout")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgHTfI_P_BaACTGN2Km_4Yk", "Bachata")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjahtnJWMf2cW6TDmpfTUqk", "spokojne-sad")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjKkH06p81TLmGItIfoMnb5", "relaks")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfi6xtpV-Di4Hgf3qCHiScyU", "Kizomba")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiB-7Td9IIYbYM0DsPjxAt0", "imprezka")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfi2UzQtyRhB4zVClwJlzuHD", "Reggae")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiC8LyEB92IEsBFlbBjxCj0", "techno")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgDX6QR1isPJEUNkWRbPa0e", "polskie hity")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgMkKYQ8zK1wPzLE7nuYbYk", "stare ale jare")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfg4ur-Bk9PCdqguhKoHCfMD", "muzyka filmowa")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgXRVUHpk-nhxfY4PmNMQp5", "electro Swing")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfhPdw0tTOp-k2WGWkScw6pU", "hip-hop")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh6_5dWYpBB9bGVIKctGT2Y", "muzyka klasyczna")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh9AqFWYPJ-AIQag25aa6nL", "taniec")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfi5RcPXcTSqnkHN6En7URPS", "salsa")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgRcnKrIsUXb2lEfknbLBWX", "Semba")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiYtX-sgGsQDKbSOuvNZnrj", "Bachata Dominikana")
 
 #  PART 2
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgDX6QR1isPJEUNkWRbPa0e", "polskie hity")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgMkKYQ8zK1wPzLE7nuYbYk", "stare ale jare")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfg4ur-Bk9PCdqguhKoHCfMD", "muzyka filmowa")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgcWvb2c97oOX773DQHnhjQ", "wesele stare hity")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh09hGVx2_RreHvFmenLMma", "wesele pop")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjJaHNCH5XacdQdGOOCjuej", "wesele disco-polo")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjIGBN67_y2HEUx3lAjLGih", "wesele impreza")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgXRVUHpk-nhxfY4PmNMQp5", "electro Swing")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfhPdw0tTOp-k2WGWkScw6pU", "hip-hop")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh6_5dWYpBB9bGVIKctGT2Y", "muzyka klasyczna")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh9AqFWYPJ-AIQag25aa6nL", "taniec")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfi5RcPXcTSqnkHN6En7URPS", "salsa")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgRcnKrIsUXb2lEfknbLBWX", "Semba")
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiYtX-sgGsQDKbSOuvNZnrj", "Bachata Dominikana")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgcWvb2c97oOX773DQHnhjQ", "wesele stare hity")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh09hGVx2_RreHvFmenLMma", "wesele pop")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjJaHNCH5XacdQdGOOCjuej", "wesele disco-polo")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjIGBN67_y2HEUx3lAjLGih", "wesele impreza")
 
 
-#   download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh4YsbxgPE70a6KeFOCDgG_", "test")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh4YsbxgPE70a6KeFOCDgG_", "test")
 #   update_metadata("test")
 #   update_metadata_from_YTplaylist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh4YsbxgPE70a6KeFOCDgG_", "test")
+#   update_metadata_from_YTplaylist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjKkH06p81TLmGItIfoMnb5", "relaks")
 
-#   download_video_playlist("", "")
    now = datetime.now()
    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
    print("---------  " + dt_string + "  ---------") 
+   summary = "[SUMMARY] downloaded  %s songs"%(songsCounter)
+   print bcolors.OKGREEN + summary + bcolors.ENDC
 
-   print ("Finished\n\n")
-    
 if __name__ == '__main__':
     main()

@@ -50,36 +50,48 @@ remoteSyncFromDell()
 
 remoteSyncFromBrzozowscy()
 {
-  print "Remote Sync from Brzozowscy\n"	
+  printf "Remote Sync from Brzozowscy\n"	
   printf "MUZYKA \n"
-  rsync -srvazz --delete $MEDIASERVER_REMOTE:/mnt/TOSHIBA EXT/ /media/priv
+  rsync -srvazz --delete "$MEDIASERVER_REMOTE:/mnt/TOSHIBA EXT/muzyka/" "/media/shareTV/share/music/"
 
   printf "\nKSIAZKI \n"
-  rsync -srvazz --delete $MEDIASERVER_REMOTE:/mnt/TOSHIBA EXT/ /media/priv
+  rsync -srvazz --delete "$MEDIASERVER_REMOTE:/mnt/TOSHIBA EXT/books" "/media/shareTV/share/"
 
 }
 
 localSyncInBrzozowscy()
 {
-  print "local sync in Brzozowscy"
+  printf "local sync in Brzozowscy"
   printf "images_system \n"       # (priv)
-  rsync -srvazz --delete /mnt/TOSHIBA EXT/ /media/priv
+  rsync -srvazz --delete "/media/programmer/Dell HDD/images_system"	"/media/programmer/priv/"
 
   printf "\ninstalki programy \n"   # (share)
-  rsync -srvazz --delete /mnt/TOSHIBA EXT/ /media/priv
+  rsync -srvazz --delete "/media/programmer/Dell HDD/instalki programy" "/media/shareTV/share/"
 
   printf "\nKamera sportowa \n"     # (priv)
-  rsync -srvazz --delete /mnt/TOSHIBA EXT/ /media/priv
+  rsync -srvazz --delete "/media/programmer/Dell HDD/Kamera sportowa" "/media/programmer/priv/"
 
   printf "\nszkola \n"              # (priv)
-  rsync -srvazz --delete /mnt/TOSHIBA EXT/ /media/priv
+  rsync -srvazz --delete "/media/programmer/Dell HDD/szkoła" "/media/programmer/priv/"
+
+  printf "\nDOKUMENTY \n"
+  rsync -srvazz --delete "/media/programmer/Dell HDD/dokumenty" "/media/programmer/priv/"
+
+  printf "\nTANIEC \n"
+  rsync -srvazz --delete "/media/programmer/Dell HDD/taniec" "/media/shareTV/share/"
+
+  printf "\nTAPETY \n"
+  rsync -srvazz --delete "/media/programmer/Dell HDD/tapety" "/media/programmer/priv/"
+
+  printf "\nZDJECIA \n"
+  rsync -srvazz --delete "/media/programmer/Dell HDD/Zdjęcia/z telefonu/7 Xiaomi Mi" "/media/programmer/priv/Zdjęcia/z telefonu/"
 
 }
 
 set -e
 
-#remoteSyncFromDell()
-#remoteSyncFromBrzozowscy()
-#localSyncInBrzozowscy()
+#remoteSyncFromDell
+#remoteSyncFromBrzozowscy
+#localSyncInBrzozowscy
 
 

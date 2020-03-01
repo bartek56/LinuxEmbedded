@@ -3,22 +3,22 @@
 # synchronization between laptop and Brzozowscy server
 # catalogs:
 # Dell external drive:
-#  dokumenty            remote   Brzozowscy server (priv)
-#  images_system        local    Brzozowscy server (priv)
-#  instalki programy    local    Brzozowscy server (share)
-#  Kamera sportowa      local    Brzozowscy server (priv)
-#  szkola               local    Brzozowscy server (priv)
-#  taniec               remote   Brzozowscy server (share) 
-#  tapety               remote   Brzozowscy server (priv)
-#  VHS na DVD                    Brzozowscy server (priv)
-#  Zdjecia              remote   Brzozowscy server (priv)
+#  dokumenty            remote   Brzozowscy server (priv)    remoteSyncFromDell
+#  images_system        local    Brzozowscy server (priv)    localSyncInBrzozowscy
+#  instalki programy    local    Brzozowscy server (share)   localSyncInBrzozowscy
+#  Kamera sportowa      local    Brzozowscy server (priv)    localSyncInBrzozowscy
+#  szkola               local    Brzozowscy server (priv)    localSyncInBrzozowscy
+#  taniec               remote   Brzozowscy server (share)   remoteSyncFromDell
+#  tapety               remote   Brzozowscy server (priv)    remoteSyncFromDell
+#  VHS na DVD                    Brzozowscy server (priv)    
+#  Zdjecia              remote   Brzozowscy server (priv)    remoteSyncFromDell
 #  
 # MediaServer
-#  movies                        Brzozowscy server (share)
+#  movies                        Brzozowscy server (share)   
 #  TVShows                       Brzozowscy server (share)
-#  music                remote   Brzozowscy server (share)
-#  books                remote   Brzozowscy server (share)
-#
+#  music                remote   Brzozowscy server (share)   remoteSyncFromBrzozowscy
+#  books                remote   Brzozowscy server (share)   remoteSyncFromBrzozowscy
+#  audiobooks           remote   Brzozowscy server (share)   remoteSyncFromBrzozowscy
 
 
 # VARIABLES: user@address
@@ -30,22 +30,22 @@ remoteSyncFromDell()
 {
   printf "Remote sync From Dell\n"
   printf "mount \n"
-  ssh -t $BRZOZOWSCY_REMOTE_ROOT 'mount /dev/sda1 /media/priv'
+  ssh -p 20022 -t $BRZOZOWSCY_REMOTE_ROOT 'mount /dev/sda1 /media/priv'
   
   printf "\nDOKUMENTY \n"
-  rsync -srvazz --delete /home/bartosz/Documents/dokumenty $BRZOZOWSCY_REMOTE:/media/priv/
+  rsync -srvazz -e 'ssh -p 20022' --delete "/home/bartosz/Documents/dokumenty" "$BRZOZOWSCY_REMOTE:/media/priv/"
 
   printf "\nTANIEC \n"
-  rsync -srvazz --delete /home/bartosz/Video/taniec $BRZOZOWSCY_REMOTE:/media/share/shareTV/
+  rsync -srvazz -e 'ssh -p 20022' --delete "/home/bartosz/Videos/taniec" "$BRZOZOWSCY_REMOTE:/media/shareTV/share/"
 
   printf "\nTAPETY \n"
-  rsync -srvazz --delete /home/bartosz/pictures/tapety $BRZOZOWSCY_REMOTE:/media/priv/
+  rsync -srvazz -e 'ssh -p 20022' --delete "/home/bartosz/Pictures/tapety" "$BRZOZOWSCY_REMOTE:/media/priv/"
 
   printf "\nZDJECIA \n"
-  rsync -srvazz --delete /home/bartosz/pictures/zdjecia $BRZOZOWSCY_REMOTE:/media/priv/
+  rsync -srvazz -e 'ssh -p 20022' --delete "/home/bartosz/Pictures/z telefonu/7 Xiaomi Mi" "$BRZOZOWSCY_REMOTE:/media/priv/Zdjęcia/z telefonu/"
 
   printf "\numount \n"
-  ssh -t $BRZOZOWSCY_REMOTE_ROOT 'umount /media/priv'
+  ssh -p 20022 -t $BRZOZOWSCY_REMOTE_ROOT 'umount /media/priv'
 }
 
 remoteSyncFromBrzozowscy()
@@ -57,7 +57,10 @@ remoteSyncFromBrzozowscy()
   printf "\nKSIAZKI \n"
   rsync -srvazz --delete "$MEDIASERVER_REMOTE:/mnt/TOSHIBA EXT/books" "/media/shareTV/share/"
 
+	printf "\nAUDIOBOOKS \n"
+  rsync -srvazz --delete "$MEDIASERVER_REMOTE:/mnt/TOSHIBA EXT/Audiobooks" "/media/shareTV/share/"
 }
+
 
 localSyncInBrzozowscy()
 {
@@ -84,7 +87,7 @@ localSyncInBrzozowscy()
   rsync -srvazz --delete "/media/programmer/Dell HDD/tapety" "/media/programmer/priv/"
 
   printf "\nZDJECIA \n"
-  rsync -srvazz --delete "/media/programmer/Dell HDD/Zdjęcia/z telefonu/7 Xiaomi Mi" "/media/programmer/priv/Zdjęcia/z telefonu/"
+  rsync -srvazz --delete "/media/programmer/Dell HDD/Zdjęcia" "/media/programmer/priv/"
 
 }
 

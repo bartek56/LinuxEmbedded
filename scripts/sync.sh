@@ -88,10 +88,23 @@ localSyncInBrzozowscy()
 
 }
 
+tvshowsToHardDrive()
+{
+   printf "\nGALILEO \n"
+	 filesList=$(rsync -snrvazz "/media/shareTV/share/TVShows/Galileo/" "$MEDIASERVER_REMOTE:/mnt/TOSHIBA EXT/Wideo/TV Shows/Galileo/" | grep -E "*.mkv|*.ts")
+   for file in $filesList; do
+     printf "%s\n" $file
+		 cp -n "/media/shareTV/share/TVShows/Galileo/$file" "/media/programmer/Dell HDD/Galileo/"
+	 done
+}
+
+
 set -e
 
 #remoteSyncFromDell
 #remoteSyncFromBrzozowscy
 #localSyncInBrzozowscy
+#tvshowsToHardDrive
+
 
 

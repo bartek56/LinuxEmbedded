@@ -57,8 +57,11 @@ def convert_song_name(songName):
     songName = songName.replace("(Official Audio)", "")
     songName = songName.replace("[Official Audio]", "")
 
+    songName = songName.replace("   ", " ")   
     songName = songName.replace("  ", " ")   
     songName = songName.replace("  ", " ")   
+    songName = songName.replace(" _", "")
+
     return songName
 
 def rename_song_name(songName):
@@ -214,11 +217,9 @@ def update_metadata_from_YTplaylist(url, playlistName):
          songName = songName.replace("|", "_")
          songName = songName.replace("\"", "'")
          fileName="%s%s"%(songName,mp3ext)
-
      if not os.path.isfile(os.path.join(path, fileName)):
          songName = rename_song_name(songName)
          fileName="%s%s"%(songName,mp3ext)
-     
      if not os.path.isfile(os.path.join(path, fileName)):
          warningInfo="WARNING: %s not exist"%(fileName)
          print bcolors.WARNING + warningInfo + bcolors.ENDC
@@ -308,8 +309,6 @@ def main():
 
 #   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh4YsbxgPE70a6KeFOCDgG_", "test")
 #   update_metadata_from_YTplaylist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh4YsbxgPE70a6KeFOCDgG_", "test")
-
-   update_metadata_from_YTplaylist("https://www.youtube.com/playlist?list=PL6uhlddQJkfi6xtpV-Di4Hgf3qCHiScyU", "Kizomba")
 
    now = datetime.now()
    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")

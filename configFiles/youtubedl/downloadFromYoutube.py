@@ -21,36 +21,42 @@ class bcolors:
 PATH='/mnt/TOSHIBA EXT/muzyka/Youtube list/'
 
 def convert_song_name(songName):
-    songName = songName.replace("(Official Video)", "")
-    songName = songName.replace("( Official Video )", "")
+    songName = songName.replace("(Oficial Video HD)", "")
     songName = songName.replace("(Official Video HD)", "")
+    songName = songName.replace("[Official Video HD]", "")
+    
+    songName = songName.replace("[Official Music Video]", "")
+    songName = songName.replace("(Official Music Video)", "")
+
+    songName = songName.replace("( Official Video )", "")
+
+    songName = songName.replace("(Official Video)", "")
     songName = songName.replace("[Official Video]", "")
     songName = songName.replace("[OFFICIAL VIDEO]", "")
-    songName = songName.replace("Official Video", "")
     songName = songName.replace("(OFFICIAL VIDEO)", "")
     songName = songName.replace("(Video Official)", "")
-    songName = songName.replace("(Official Video HD)", "")
     songName = songName.replace("[Video Official]", "")
-    songName = songName.replace("Video Official", "")
     songName = songName.replace("(VIDEO OFFICIAL)", "")
     songName = songName.replace("(official video)", "")
-    songName = songName.replace("[Official Music Video]", "")
-  
+      
     songName = songName.replace("(Oficial Video)", "")
     songName = songName.replace("[Oficial Video]", "")
-    songName = songName.replace("Oficial Video", "")
     songName = songName.replace("(OFICIAL VIDEO)", "")
     songName = songName.replace("(Video Oficial)", "")
-    songName = songName.replace("(Oficial Video HD)", "")
     songName = songName.replace("[Video Oficial]", "")
-    songName = songName.replace("Video Oficial", "")
     songName = songName.replace("(VIDEO OFICIAL)", "")
+  
+  
+    songName = songName.replace("Video Oficial", "")
+    songName = songName.replace("Video Official", "")
+    songName = songName.replace("Oficial Video", "")
+    songName = songName.replace("Official Video", "")
 
     songName = songName.replace("(Audio)", "")
+    
     songName = songName.replace("(Official Audio)", "")
     songName = songName.replace("[Official Audio]", "")
 
-    songName = songName.replace("(Official Music Video)", "")
     songName = songName.replace("  ", " ")   
     songName = songName.replace("  ", " ")   
     return songName
@@ -145,20 +151,22 @@ def add_metadata(trackNumber, playlistName, songName):
 
       filesList = [f for f in os.listdir(path) if f.startswith(songName)]
       if len(filesList) is 0:
-        warningInfo="WARNING: %s not exist"%(originalFileName)
-        print bcolors.WARNING + warningInfo + bcolors.ENDC
+        songName = songName.replace("/", "_")
+        songName = songName.replace("|", "_")
+        songName = songName.replace("\"", "'")
+        filesList = [f for f in os.listdir(path) if f.startswith(songName)]        
+        if len(filesList) is 0:
+            warningInfo="ERROR: %s not exist"%(songName)
+            print bcolors.FAIL + warningInfo + bcolors.ENDC
+            return
 
       for x in range(len(filesList)):
         originalFileName = filesList[x]
         
         if not os.path.isfile(os.path.join(path, originalFileName)):
-            originalFileName = originalFileName.replace("/", "_")
-            originalFileName = originalFileName.replace("|", "_")
-            originalFileName = originalFileName.replace("\"", "'")
-            if not os.path.isfile(os.path.join(path, originalFileName)):
-                warningInfo="WARNING: %s not exist"%(filesList[x])
-                print bcolors.WARNING + warningInfo + bcolors.ENDC
-                continue
+            warningInfo="ERROR: %s not exist"%(filesList[x])
+            print bcolors.FAIL + warningInfo + bcolors.ENDC
+            continue
 
         newFileName = rename_song_file(path, originalFileName)
         newSongName = newFileName.replace(".mp3", "")
@@ -208,8 +216,8 @@ def update_metadata_from_YTplaylist(url, playlistName):
          fileName="%s%s"%(songName,mp3ext)
 
      if not os.path.isfile(os.path.join(path, fileName)):
-         fileName = rename_song_file(path, fileName)
-         songName = fileName.replace(".mp3","")
+         songName = rename_song_name(songName)
+         fileName="%s%s"%(songName,mp3ext)
      
      if not os.path.isfile(os.path.join(path, fileName)):
          warningInfo="WARNING: %s not exist"%(fileName)
@@ -299,9 +307,9 @@ def main():
 
 
 #   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh4YsbxgPE70a6KeFOCDgG_", "test")
-#   update_metadata("test")
 #   update_metadata_from_YTplaylist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh4YsbxgPE70a6KeFOCDgG_", "test")
-#   update_metadata_from_YTplaylist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjKkH06p81TLmGItIfoMnb5", "relaks")
+
+   update_metadata_from_YTplaylist("https://www.youtube.com/playlist?list=PL6uhlddQJkfi6xtpV-Di4Hgf3qCHiScyU", "Kizomba")
 
    now = datetime.now()
    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")

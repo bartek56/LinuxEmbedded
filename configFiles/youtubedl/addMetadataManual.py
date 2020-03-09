@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 import sys
+import getopt
 import os
 import warnings
 from datetime import datetime
@@ -77,14 +78,36 @@ def add_metadata_manual_without_number(playlistName, musicPath, fileName):
 
 
 
-def main():
+def main(argv):
 
     PATH='/mnt/TOSHIBA EXT/muzyka/Youtube list/'   
-    
-    add_metadata_manual("Bachata", 102, PATH, "Joan Soriano - Tu me estas matando.mp3")
-#    add_metadata_manual_without_number(albumName, PATH, fileName)
+    playlistName = ''
+    trackNumber = ''
+    fileName = ''
+    try:
+       opts, args = getopt.getopt(argv,"hp:f:t:",["help","playlistName=","fileName=","trackNumber="])
+    except getopt.GetoptError: 
+       print 'test.py -p <playlistName> -f <fileName> -t <trackNumber>'
+       sys.exit(2)
+    for opt, arg in opts:
+       if opt in ("-h","--help"):
+          print '-p <playlistName> -f <fileName> -t <trackNumber>'
+          sys.exit()
+       elif opt in ("-p","--playlistName"):
+          playlistName = arg
+       elif opt in ("-f","--fileName"):
+          fileName = arg
+       elif opt in ("-t","--trackNumber"):
+          trackNumber = arg
+
+    if (trackNumber is not ''):
+       add_metadata_manual(playlistName, trackNumber, PATH, fileName)
+    else:
+       add_metadata_manual_without_number(playlistName, PATH, fileName)
 
     print ("Finished")
     
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1:])
+
+    

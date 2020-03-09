@@ -24,12 +24,12 @@ def convert_song_name(songName):
     songName = songName.replace("(Oficial Video HD)", "")
     songName = songName.replace("(Official Video HD)", "")
     songName = songName.replace("[Official Video HD]", "")
-    
     songName = songName.replace("[Official Music Video]", "")
     songName = songName.replace("(Official Music Video)", "")
 
-    songName = songName.replace("( Official Video )", "")
+    songName = songName.replace("(Official Lyric Video)", "")
 
+    songName = songName.replace("( Official Video )", "")
     songName = songName.replace("(Official Video)", "")
     songName = songName.replace("[Official Video]", "")
     songName = songName.replace("[OFFICIAL VIDEO]", "")
@@ -307,8 +307,10 @@ def main():
 #   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjIGBN67_y2HEUx3lAjLGih", "wesele impreza")
 
 
+
 #   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh4YsbxgPE70a6KeFOCDgG_", "test")
-#   update_metadata_from_YTplaylist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh4YsbxgPE70a6KeFOCDgG_", "test")
+
+#   update_metadata_from_YTplaylist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgHTfI_P_BaACTGN2Km_4Yk", "Bachata")
 
    now = datetime.now()
    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")

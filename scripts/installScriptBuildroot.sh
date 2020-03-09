@@ -211,12 +211,12 @@ configure_vsftpd()
 install_youtubeDL()
 {
     printf " ----- YoutubeDL install  ----- \n\n "
-    wget https://files.pythonhosted.org/packages/1e/c7/8f0b6cb38fd9c44adb7c612c2f83bb0a53f04a82a29165f19c320ff4c243/youtube_dl-2020.1.24.tar.gz
-    gunzip youtube_dl-2020.1.24.tar.gz
-    tar xf youtube_dl-2020.1.24.tar
-    mv youtube_dl-2020.1.24/youtube_dl /usr/lib/python2.7/youtube_dl
-    rm youtube_dl-2020.1.24.tar
-    rm -rf youtube_dl-2020.1.24
+		wget "https://files.pythonhosted.org/packages/17/1a/096956488d472038f55bcb384412860541bcdbe8bb199ddfde51659ac5ee/youtube_dl-2020.3.1.tar.gz"
+    gunzip youtube_dl-2020.3.1.tar.gz
+    tar xf youtube_dl-2020.3.1.tar
+    mv youtube_dl-2020.3.1/youtube_dl /usr/lib/python2.7/youtube_dl
+    rm youtube_dl-2020.3.1.tar
+    rm -rf youtube_dl-2020.3.1
     cp /home/Downloads/LinuxEmbedded/configFiles/youtubedl/systemd-youtubedl.* /usr/lib/systemd/system/
     cp /home/Downloads/LinuxEmbedded/configFiles/youtubedl/downloadFromYoutube.py /opt/
     systemctl enable systemd-youtubedl.timer
@@ -278,6 +278,28 @@ configure_bluetooth()
 		systemctl start bluealsa-aplay.service
 }
 
+configure_gmplayer()
+{
+    printf " ----- GMPlayer configuration  ----- \n\n "
+    wget http://www.mplayerhq.hu/MPlayer/skins/Clearlooks-2.0.tar.bz2
+		bzip2 -d Clearlooks-2.0.tar.bz2
+		tar -x -f Clearlooks-2.0.tar
+    mkdir -p /usr/share/mplayer
+    mkdir -p /usr/share/mplayer/skins
+		cp -r Clearlooks /usr/share/mplayer/skins/default
+		rm -rf Clearlooks
+		rm Clearlooks-2.0.tar
+}
+
+configure_alarm()
+{
+    printf " ----- Alarm configuration  ----- \n\n "
+		cp /home/Downloads/LinuxEmbedded/configFiles/alarm/alarm.sh /opt/
+    cp /home/Downloads/LinuxEmbedded/configFiles/alarm/alarm.service /usr/lib/systemd/system/
+    cp /home/Downloads/LinuxEmbedded/configFiles/alarm/alarm.timer /usr/lib/systemd/system/
+		systemctl enable alarm.timer
+		systemctl start alarm.timer   
+}
 
 set -e
 #psplash
@@ -293,3 +315,6 @@ set -e
 #configure_minidlna
 #configure_mpd
 #configure_bluetooth
+#configure_gmplayer
+#configure_alarm
+

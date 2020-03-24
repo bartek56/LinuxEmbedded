@@ -19,7 +19,7 @@
 <tr>
 	<td>
 			<script language="JavaScript">
-document.write('<a href="' + window.location.protocol + '//' + window.location.hostname + ':9981' + window.location.pathname + 
+document.write('<a href="' + window.location.protocol + '//' + window.location.hostname + window.location.pathname + '/tvheadend' +
 	'" ><img src="tvheadend.png" height="150" alt="" border="0" >' );
 			</script>
 	<center><h2>TvHeadEnd</h2></center>
@@ -27,7 +27,7 @@ document.write('<a href="' + window.location.protocol + '//' + window.location.h
 	</td>
 	<td>
 			<script language="JavaScript">
-document.write('<a href="' + window.location.protocol + '//' + window.location.hostname + ':8080' + window.location.pathname + 
+document.write('<a href="' + 'http://' + window.location.hostname + ':8080' + window.location.pathname + 
 	'" ><img src="ympd.svg" height="150" alt="" border="0" >' );
 			</script>
 	<center><h2>Music Player</h2></center>
@@ -44,6 +44,19 @@ document.write('<a href="' + window.location.protocol + '//' + window.location.h
 
 	</td>
 
+
+	<td>
+			<script language="JavaScript">
+document.write('<a href="' + window.location.protocol + '//' + window.location.hostname + ':8090' + window.location.pathname +
+	'" ><img src="filebrowser.png" height="150" alt="" border="0" >' );
+			</script>
+	<center><h2>File Browser</h2></center>
+
+	</td>
+
+
+
+<!--
 	<td>
 			<script language="JavaScript">
 document.write('<a href="' + window.location.protocol + '//' + window.location.hostname + ':8096' + window.location.pathname + 
@@ -70,7 +83,7 @@ document.write('<a href="' + window.location.protocol + '//' + window.location.h
 	<center><h2>Ubooquity</h2></center>
 
 	</td>
-
+-->
 
 	
 </tr>
@@ -96,19 +109,9 @@ document.write('<a href=smb://' + window.location.hostname + window.location.pat
 	<center><h2>Samba</h2></center>
 
 	</td>
-
 	<td>
 			<script language="JavaScript">
-document.write('<a href="' + window.location.protocol + '//' + window.location.hostname + ':8090' + window.location.pathname + 
-	'" ><img src="filebrowser.png" height="150" alt="" border="0" >' );
-			</script>
-	<center><h2>File Browser</h2></center>
-
-	</td>
-
-	<td>
-			<script language="JavaScript">
-document.write('<a href="' + window.location.protocol + '//' + window.location.hostname + ':8200' + window.location.pathname + 
+document.write('<a href="' + 'http://' + window.location.hostname + ':8200' + window.location.pathname + 
 	'" ><img src="dlna.png" height="150" alt="" border="0" >' );
 			</script>
 	<center><h2>DLNA status</h2></center>

@@ -64,6 +64,7 @@ configure_Ampache()
 
     cp /home/Downloads/LinuxEmbedded/configFiles/apache/php-fpm.conf /etc/php-fpm.conf
     cp /home/Downloads/LinuxEmbedded/configFiles/apache/httpd.conf /etc/apache2/httpd.conf
+    cp /home/Downloads/LinuxEmbedded/configFiles/apache/extra/* /etc/apache2/extra/
     cp /home/Downloads/LinuxEmbedded/configFiles/apache/apache.service /usr/lib/systemd/system/
     systemctl enable apache.service
     systemctl start apache.service

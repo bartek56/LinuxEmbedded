@@ -7,7 +7,8 @@ from datetime import datetime
 from mutagen.easyid3 import EasyID3
 from mutagen.mp3 import MP3
 
-
+reload(sys)
+sys.setdefaultencoding("utf-8")
 #PATH='/tmp/muzyka/Youtube list/'
 
 
@@ -99,6 +100,7 @@ def main(argv):
           fileName = arg
        elif opt in ("-t","--trackNumber"):
           trackNumber = arg
+
 
     if (trackNumber is not ''):
        add_metadata_manual(playlistName, trackNumber, PATH, fileName)

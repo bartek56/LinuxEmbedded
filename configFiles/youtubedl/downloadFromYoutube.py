@@ -32,12 +32,13 @@ def convert_song_name(songName):
     songName = songName.replace("( Official Video )", "")
     songName = songName.replace("(Official Video)", "")
     songName = songName.replace("[Official Video]", "")
+    songName = songName.replace("(official video)", "")
+    songName = songName.replace("(Official video)", "")
     songName = songName.replace("[OFFICIAL VIDEO]", "")
     songName = songName.replace("(OFFICIAL VIDEO)", "")
     songName = songName.replace("(Video Official)", "")
     songName = songName.replace("[Video Official]", "")
     songName = songName.replace("(VIDEO OFFICIAL)", "")
-    songName = songName.replace("(official video)", "")
       
     songName = songName.replace("(Oficial Video)", "")
     songName = songName.replace("[Oficial Video]", "")
@@ -45,7 +46,6 @@ def convert_song_name(songName):
     songName = songName.replace("(Video Oficial)", "")
     songName = songName.replace("[Video Oficial]", "")
     songName = songName.replace("(VIDEO OFICIAL)", "")
-  
   
     songName = songName.replace("Video Oficial", "")
     songName = songName.replace("Video Official", "")
@@ -224,6 +224,10 @@ def update_metadata_from_YTplaylist(url, playlistName):
          warningInfo="WARNING: %s not exist"%(fileName)
          print bcolors.WARNING + warningInfo + bcolors.ENDC
          continue
+     
+     fileName = "%s%s"%(songName,mp3ext)
+     fileName = rename_song_file(path, fileName)
+     songName = fileName.replace(".mp3", "")
 
      metadataSongName = convert_songname_on_metadata(songName)
      fileNameWithPath = os.path.join(path, fileName)    
@@ -310,8 +314,9 @@ def main():
 
 #   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh4YsbxgPE70a6KeFOCDgG_", "test")
 
-#   update_metadata_from_YTplaylist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgHTfI_P_BaACTGN2Km_4Yk", "Bachata")
-
+#   update_metadata_from_YTplaylist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjahtnJWMf2cW6TDmpfTUqk", "spokojne-sad")
+#   update_metadata_from_YTplaylist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh4YsbxgPE70a6KeFOCDgG_", "test")
+   
    now = datetime.now()
    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
    print("---------  " + dt_string + "  ---------") 

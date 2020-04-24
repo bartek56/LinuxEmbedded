@@ -17,6 +17,11 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+#PATH='/tmp/muzyka/Youtube list/'
+#PATH='/mnt/TOSHIBA EXT/muzyka/Youtube list/'
+#PATH='/media/shareTV/share/music/Youtube list'
+
+
 def createPlaylist(dirName):
     PATH = os.path.abspath(os.getcwd())
     path = "%s/%s"%(PATH,dirName)
@@ -24,17 +29,16 @@ def createPlaylist(dirName):
 
     textFile="#EXTM3U\n"
     for fileName in fileNames:
-        fileNameWithPath="%s/%s"%(path, fileName)
-        audio = MP3(fileNameWithPath)
+        fileNameWithPath="%s/%s"%(dirName, fileName)
+        fileNameWithFullPath="%s/%s"%(path, fileName)
+        audio = MP3(fileNameWithFullPath)
         time = int(round(audio.info.length))
         songName = fileName.replace(".mp3","")
         textFile+="#EXTINF:%s,%s\n"%(time,songName)
         textFile+="%s\n"%(fileNameWithPath)
         textFile+="\n"
     
-    if not os.path.exists('playlists'):
-            os.makedirs('playlists')
-    playlistFile = "playlists/%s.m3u"%(dirName)
+    playlistFile = "%s.m3u"%(dirName)
     f = codecs.open(playlistFile,"w+","utf-8")
     f.write(textFile)
     f.close()
@@ -42,14 +46,23 @@ def createPlaylist(dirName):
 def createPlaylists():
     dirName = os.path.abspath(os.getcwd())
     folders = [f for f in os.listdir(dirName) if os.path.isdir(os.path.join(dirName, f))]
-    folders.remove("playlists")
     for i in folders:
         print i
         createPlaylist(i)
 
 def main():
+   songsCounter = 0
+   now = datetime.now()
+   dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+   print("---------  " + dt_string + "  ---------") 
+
 #   createPlaylist("polskie hity")
    createPlaylists()
+   now = datetime.now()
+   dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+   print("---------  " + dt_string + "  ---------") 
+   summary = "[SUMMARY] downloaded  %s songs"%(songsCounter)
+   print bcolors.OKGREEN + summary + bcolors.ENDC
 
 if __name__ == '__main__':
     main()

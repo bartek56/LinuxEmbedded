@@ -17,8 +17,9 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-#PATH='/tmp/muzyka/Youtube list/'
 PATH='/mnt/TOSHIBA EXT/muzyka/Youtube list/'
+#PATH='/media/shareTV/share/music/Youtube list'
+#PATH='/tmp/muzyka/Youtube list/'
 
 def convert_song_name(songName):
     songName = songName.replace("(Oficial Video HD)", "")
@@ -74,7 +75,6 @@ def rename_song_name(songName):
     songName = songName.replace(" .xyz", ".xyz")
     songName = songName.replace(".xyz", "")
     
-    #songName = songName.lstrip()
     return songName
 
 def rename_song_file(path, fileName):
@@ -148,106 +148,74 @@ def update_metadata(playlistName):
         print newFileNameWithPath
         print audio.pprint()
 
-def add_metadata(trackNumber, playlistName, songName):
-      path=PATH+playlistName
-      albumName="YT "+playlistName
+def add_metadata(trackNumber, playlistName, artist, songName):
+    path=PATH+playlistName
+    albumName="YT "+playlistName
 
-      filesList = [f for f in os.listdir(path) if f.startswith(songName)]
-      if len(filesList) is 0:
+    mp3ext=".mp3"
+    fileName="%s%s"%(songName,mp3ext)
+      
+    if not os.path.isfile(os.path.join(path, fileName)):
         songName = songName.replace("/", "_")
         songName = songName.replace("|", "_")
         songName = songName.replace("\"", "'")
-        filesList = [f for f in os.listdir(path) if f.startswith(songName)]        
-        if len(filesList) is 0:
-            warningInfo="ERROR: %s not exist"%(songName)
-            print bcolors.FAIL + warningInfo + bcolors.ENDC
-            return
+        fileName="%s%s"%(songName,mp3ext)
+    if not os.path.isfile(os.path.join(path, fileName)):
+        songName = rename_song_name(songName)
+        fileName="%s%s"%(songName,mp3ext)
+    if not os.path.isfile(os.path.join(path, fileName)):
+        warningInfo="WARNING: %s not exist"%(fileName)
+        print bcolors.WARNING + warningInfo + bcolors.ENDC
+        return
 
-      for x in range(len(filesList)):
-        originalFileName = filesList[x]
+    newFileName = rename_song_file(path, fileName)
+    newSongName = newFileName.replace(".mp3", "")
+
+    metadataSongName = convert_songname_on_metadata(newSongName)
+    newFileNameWithPath = os.path.join(path, newFileName)
         
-        if not os.path.isfile(os.path.join(path, originalFileName)):
-            warningInfo="ERROR: %s not exist"%(filesList[x])
-            print bcolors.FAIL + warningInfo + bcolors.ENDC
-            continue
-
-        newFileName = rename_song_file(path, originalFileName)
-        newSongName = newFileName.replace(".mp3", "")
-
-        metadataSongName = convert_songname_on_metadata(newSongName)
-        newFileNameWithPath = os.path.join(path, newFileName)
-        
-        metatag = EasyID3(newFileNameWithPath)
-        metatag['album'] = albumName
+    metatag = EasyID3(newFileNameWithPath)
+    metatag['album'] = albumName
+    if artist is not None:
+        metatag['artist'] = artist
+    else:
         metatag['artist'] = metadataSongName['artist']
-        metatag['title'] = metadataSongName['title']
-        metatag['tracknumber'] = str(trackNumber)
-        metatag.save()
-        print bcolors.OKGREEN + "[ID3] Added metadata" + bcolors.ENDC
-        print newFileNameWithPath
-        audio = MP3(newFileNameWithPath, ID3=EasyID3)
-        print audio.pprint()
+    metatag['title'] = metadataSongName['title']
+    metatag['tracknumber'] = str(trackNumber)
+    metatag.save()
+    print bcolors.OKGREEN + "[ID3] Added metadata" + bcolors.ENDC
+    print newFileNameWithPath
+    audio = MP3(newFileNameWithPath, ID3=EasyID3)
+    print audio.pprint()
 
 def update_metadata_from_YTplaylist(url, playlistName):
-  path=PATH+playlistName
-  albumName="YT "+playlistName
-  if not os.path.exists(path):
-    os.makedirs(path)
-  trackNumber = len([f for f in os.listdir(path) if f.endswith('.mp3')])
+    path=PATH+playlistName
+    albumName="YT "+playlistName
+    if not os.path.exists(path):
+        os.makedirs(path)
+    trackNumber = len([f for f in os.listdir(path) if f.endswith('.mp3')])
 
-  ydl_opts = {
-          'addmetadata': True,
-          }  
-  results = youtube_dl.YoutubeDL(ydl_opts).extract_info(url,download=False)
-  if not results:
-     warningInfo="ERROR: not extract_info in results"
-     print bcolors.FAIL + warningInfo + bcolors.ENDC
-     return
- 
-  playlistIndexList = [i['playlist_index'] for i in results['entries']]
-  songsTitleList = [i['title'] for i in results['entries']]
-  for x in range(len(songsTitleList)):
-     songName = songsTitleList[x]
-     trackNumber = playlistIndexList[x]
-     mp3ext=".mp3"
-     fileName="%s%s"%(songName,mp3ext)
-     
-     if not os.path.isfile(os.path.join(path, fileName)):
-         songName = songName.replace("/", "_")
-         songName = songName.replace("|", "_")
-         songName = songName.replace("\"", "'")
-         fileName="%s%s"%(songName,mp3ext)
-     if not os.path.isfile(os.path.join(path, fileName)):
-         songName = rename_song_name(songName)
-         fileName="%s%s"%(songName,mp3ext)
-     if not os.path.isfile(os.path.join(path, fileName)):
-         warningInfo="WARNING: %s not exist"%(fileName)
-         print bcolors.WARNING + warningInfo + bcolors.ENDC
-         continue
-     
-     fileName = "%s%s"%(songName,mp3ext)
-     fileName = rename_song_file(path, fileName)
-     songName = fileName.replace(".mp3", "")
+    ydl_opts = {
+            'addmetadata': True,
+            }  
+    results = youtube_dl.YoutubeDL(ydl_opts).extract_info(url,download=False)
+    if not results:
+       warningInfo="ERROR: not extract_info in results"
+       print bcolors.FAIL + warningInfo + bcolors.ENDC
+       return
 
-     metadataSongName = convert_songname_on_metadata(songName)
-     fileNameWithPath = os.path.join(path, fileName)    
-     metatag = EasyID3(fileNameWithPath)
-     metatag['album'] = albumName
-     metatag['artist'] = metadataSongName['artist']
-     metatag['title'] = metadataSongName['title']
-     metatag['tracknumber'] = str(trackNumber)
-     metatag.save()
-     print bcolors.OKGREEN + "[ID3] Added metadata" + bcolors.ENDC
-     print fileNameWithPath
-     audio = MP3(fileNameWithPath, ID3=EasyID3)
-     print audio.pprint()
+    artistList = [i['artist'] for i in results['entries']]
+    playlistIndexList = [i['playlist_index'] for i in results['entries']]
+    songsTitleList = [i['title'] for i in results['entries']]
+    for x in range(len(songsTitleList)):
+        add_metadata(playlistIndexList[x], playlistName, artistList[x], songsTitleList[x])
 
 def download_video_playlist(url, playlistName):
-  path=PATH+playlistName
-  if not os.path.exists(path):
-    os.makedirs(path)
+    path=PATH+playlistName
+    if not os.path.exists(path):
+      os.makedirs(path)
 
-  ydl_opts = {
+    ydl_opts = {
           'format': 'bestaudio/best',
           'download_archive': path+'/downloaded_songs.txt',
           'addmetadata': True,
@@ -259,24 +227,26 @@ def download_video_playlist(url, playlistName):
              }],
           'ignoreerrors': True
           }  
-  results = youtube_dl.YoutubeDL(ydl_opts).extract_info(url)
-  if not results:
-     warningInfo="ERROR: not extract_info in results"
-     print bcolors.FAIL + warningInfo + bcolors.ENDC
-     return
+    results = youtube_dl.YoutubeDL(ydl_opts).extract_info(url)
+    if not results:
+        warningInfo="ERROR: not extract_info in results"
+        print bcolors.FAIL + warningInfo + bcolors.ENDC
+        return
 
-
-  songsTitleList = [i['title'] for i in results['entries']]
-  playlistIndexList = [i['playlist_index'] for i in results['entries']]
-  songCounter=0
-  for x in range(len(songsTitleList)):
-     songName = songsTitleList[x]
-     add_metadata(playlistIndexList[x], playlistName, songName)
-     songCounter+=1
+    songsTitleList = [i['title'] for i in results['entries']]
+    playlistIndexList = [i['playlist_index'] for i in results['entries']]
+    artistList = [i['artist'] for i in results['entries']]
+        
+    songCounter=0
+    for x in range(len(songsTitleList)):
+        add_metadata(playlistIndexList[x], playlistName, artistList[x], songsTitleList[x])
+        songCounter+=1
   
-  info = "[INFO] downloaded  %s songs"%(songCounter)
-  print bcolors.OKGREEN + info + bcolors.ENDC
-  return songCounter
+    info = "[INFO] downloaded  %s songs"%(songCounter)
+    print bcolors.OKGREEN + info + bcolors.ENDC
+    return songCounter
+
+
 
 def main():
    songsCounter = 0
@@ -311,12 +281,13 @@ def main():
 #   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjIGBN67_y2HEUx3lAjLGih", "wesele impreza")
 
 
-
-#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh4YsbxgPE70a6KeFOCDgG_", "test")
-
 #   update_metadata_from_YTplaylist("https://www.youtube.com/playlist?list=PL6uhlddQJkfjahtnJWMf2cW6TDmpfTUqk", "spokojne-sad")
-#   update_metadata_from_YTplaylist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh4YsbxgPE70a6KeFOCDgG_", "test")
    
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh4YsbxgPE70a6KeFOCDgG_", "test")
+#   update_metadata_from_YTplaylist("https://www.youtube.com/playlist?list=PL6uhlddQJkfh4YsbxgPE70a6KeFOCDgG_", "test")
+
+
+
    now = datetime.now()
    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
    print("---------  " + dt_string + "  ---------") 

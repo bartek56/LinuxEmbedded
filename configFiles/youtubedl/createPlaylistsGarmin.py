@@ -23,17 +23,16 @@ def createPlaylist(dirName):
     fileNames = [f for f in os.listdir(path) if f.endswith('.mp3')]
 
 
-    if fileNames.count > 5:
-        textFile="#EXTM3U\n"
-        for fileName in fileNames:
-            fileNameWithPath="%s/%s"%(dirName, fileName)
-            fileNameWithFullPath="%s/%s"%(path, fileName)
-            audio = MP3(fileNameWithFullPath)
-            time = int(round(audio.info.length))
-            songName = fileName.replace(".mp3","")
-            textFile+="#EXTINF:%s,%s\n"%(time,songName)
-            textFile+="%s\n"%(fileNameWithPath)
-            textFile+="\n"
+    textFile="#EXTM3U\n"
+    for fileName in fileNames:
+        fileNameWithPath="%s/%s"%(dirName, fileName)
+        fileNameWithFullPath="%s/%s"%(path, fileName)
+        audio = MP3(fileNameWithFullPath)
+        time = int(round(audio.info.length))
+        songName = fileName.replace(".mp3","")
+        textFile+="#EXTINF:%s,%s\n"%(time,songName)
+        textFile+="%s\n"%(fileNameWithPath)
+        textFile+="\n"
     
         playlistFile = "%s.m3u"%(dirName)
         f = codecs.open(playlistFile,"w+","utf-8")
@@ -78,6 +77,7 @@ def main():
    folders.append("Bachata")
    folders.append("Kizomba")
    folders.append("Semba")
+   folders.append("salsa")
    createPlaylistForGarmin(folders,"taniec")
    
    folders=list()

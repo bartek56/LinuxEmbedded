@@ -26,22 +26,22 @@ def createPlaylist(dirName):
     PATH = os.path.abspath(os.getcwd())
     path = "%s/%s"%(PATH,dirName)
     fileNames = [f for f in os.listdir(path) if f.endswith('.mp3')]
-
-    textFile="#EXTM3U\n"
-    for fileName in fileNames:
-        fileNameWithPath="%s/%s"%(dirName, fileName)
-        fileNameWithFullPath="%s/%s"%(path, fileName)
-        audio = MP3(fileNameWithFullPath)
-        time = int(round(audio.info.length))
-        songName = fileName.replace(".mp3","")
-        textFile+="#EXTINF:%s,%s\n"%(time,songName)
-        textFile+="%s\n"%(fileNameWithPath)
-        textFile+="\n"
+    if fileNames > 5:
+        textFile="#EXTM3U\n"
+        for fileName in fileNames:
+            fileNameWithPath="%s/%s"%(dirName, fileName)
+            fileNameWithFullPath="%s/%s"%(path, fileName)
+            audio = MP3(fileNameWithFullPath)
+            time = int(round(audio.info.length))
+            songName = fileName.replace(".mp3","")
+            textFile+="#EXTINF:%s,%s\n"%(time,songName)
+            textFile+="%s\n"%(fileNameWithPath)
+            textFile+="\n"
     
-    playlistFile = "%s.m3u"%(dirName)
-    f = codecs.open(playlistFile,"w+","utf-8")
-    f.write(textFile)
-    f.close()
+        playlistFile = "%s.m3u"%(dirName)
+        f = codecs.open(playlistFile,"w+","utf-8")
+        f.write(textFile)
+        f.close()
 
 def createPlaylists():
     dirName = os.path.abspath(os.getcwd())
@@ -56,7 +56,6 @@ def main():
    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
    print("---------  " + dt_string + "  ---------") 
 
-#   createPlaylist("polskie hity")
    createPlaylists()
    now = datetime.now()
    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")

@@ -159,6 +159,7 @@ def add_metadata(trackNumber, playlistName, artist, songName):
         songName = songName.replace("/", "_")
         songName = songName.replace("|", "_")
         songName = songName.replace("\"", "'")
+        songName = songName.replace(":", "-")
         fileName="%s%s"%(songName,mp3ext)
     if not os.path.isfile(os.path.join(path, fileName)):
         songName = rename_song_name(songName)

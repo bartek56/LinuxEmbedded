@@ -229,10 +229,12 @@ def download_video_playlist(url, playlistName):
           'ignoreerrors': True
           }  
     results = youtube_dl.YoutubeDL(ydl_opts).extract_info(url)
-    if not results:
-        warningInfo="ERROR: not extract_info in results"
-        print bcolors.FAIL + warningInfo + bcolors.ENDC
-        return
+
+    for i in results['entries']:
+       if i is None:
+           warningInfo="ERROR: not extract_info in results"
+           print bcolors.FAIL + warningInfo + bcolors.ENDC
+           return 0
 
     songsTitleList = [i['title'] for i in results['entries']]
     playlistIndexList = [i['playlist_index'] for i in results['entries']]
@@ -246,7 +248,6 @@ def download_video_playlist(url, playlistName):
     info = "[INFO] downloaded  %s songs"%(songCounter)
     print bcolors.OKGREEN + info + bcolors.ENDC
     return songCounter
-
 
 
 def main():
@@ -274,6 +275,8 @@ def main():
 #   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfi5RcPXcTSqnkHN6En7URPS", "salsa")
 #   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgRcnKrIsUXb2lEfknbLBWX", "Semba")
 #   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfiYtX-sgGsQDKbSOuvNZnrj", "Bachata Dominikana")
+#   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfino9zJN7YFayg5vT4yhj4b", "Rock-Electronic")
+
 
 #  PART 2
 #   songsCounter += download_video_playlist("https://www.youtube.com/playlist?list=PL6uhlddQJkfgcWvb2c97oOX773DQHnhjQ", "wesele stare hity")

@@ -21,21 +21,21 @@ configure_kernel()
 
 configure_MediaServer()
 {
+    
     printf " ----- MediaServer Configuration  ----- \n\n "
-    cp /home/Downloads/LinuxEmbedded/configFiles/*.sh /opt/
-    chmod 755 /opt/start*
-    cp /home/Downloads/LinuxEmbedded/configFiles/start.service /usr/lib/systemd/system/
-    systemctl enable start.service
-    unlink /etc/localtime
-    ln -s /usr/share/zoneinfo/Europe/Warsaw /etc/localtime
-    date -u
-    systemctl enable start.service
+    echo 'QT_QPA_EVDEV_TOUCHSCREEN_PARAMETERS="/dev/input/event0"' >> /etc/environment
+    echo 'QT_QPA_GENERIC_PLUGINS="evdevtouch:/dev/input/event0"' >> /etc/environment
+#    echo 'QT_QPA_EGLFS_PHYSICAL_HEIGHT=480' >> /etc/environment
+#    echo 'QT_QPA_EGLFS_PHYSICAL_WIDTH=800' >> /etc/environment
+    echo 'QT_QPA_EGLFS_DISABLE_INPUT="1"' >> /etc/environment
+    systemctl disable xserver-nodm
 }
 
 configure_X11()
 {
     printf " ----- X11 Configuration  ----- \n\n "
-    cp /home/Downloads/LinuxEmbedded/configFiles/x11/99-calibration.conf /usr/share/X11/xorg.conf.d/
+    systemctl disable xserver-nodm-init.service
+#    cp /home/Downloads/LinuxEmbedded/configFiles/x11/99-calibration.conf /usr/share/X11/xorg.conf.d/
     mv /usr/share/X11/xorg.conf.d/10-evdev.conf /usr/share/X11/xorg.conf.d/45-evdev.conf
 }
 
@@ -253,8 +253,9 @@ configure_samba()
 configure_minidlna()
 {
     printf " ----- MiniDLNA configuration  ----- \n\n "
-    systemctl stop minidlnad.service
-    cp /home/Downloads/LinuxEmbedded/configFiles/miniDLNA/minidlna.conf /etc/
+    systemctl stop minidlna.service
+    systemctl disable minidlna.service
+    cp /lib/systemd/system/minidlna.service /lib/systemd/system/minidlnad.service
     systemctl start minidlnad.service
 }
 
@@ -309,4 +310,7 @@ configure_alarm()
 
 set -e
 configure_vsftpd
+configure_MediaServer
+configure_minidlna
+configure_X11
 

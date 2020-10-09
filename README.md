@@ -20,8 +20,8 @@ Media Server contains:
 - GMPlayer
 - GQView
 - touch screen
+- [MediaServerApp](https://github.com/bartek56/MediaServer)
 
-Main application is in link: https://github.com/bartek56/MediaServer
 
 Full description in polish language is in Linux w systemach wbudowanych opartych na procesorach z rdzeniem ARM.doc file. 
 

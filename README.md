@@ -2,8 +2,8 @@
 
 Project consist of configuration files for creating embedded system on Raspberry Pi 3 model B device.
 The following tools were tested:
-- [Buildroot] (https://github.com/bartek56/buildroot)
-- [Yocto] (https://github.com/bartek56/meta-mediaserver)
+- [Buildroot](https://github.com/bartek56/buildroot)
+- [Yocto](https://github.com/bartek56/meta-mediaserver)
 - OpenWRT
 
 In catalog configFiles are included configuration files for ready Linux Embedded system (e.g. systemd services) which was created using Buildroot. The subject of the project is Media Server.

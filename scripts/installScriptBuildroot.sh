@@ -209,10 +209,24 @@ configure_vsftpd()
 	systemctl start vsftpd.service
 }
 
-install_youtubeDL()
+update_youtubedl()
+{
+    printf " ----- YoutubeDL update  ----- \n\n "
+    version="2020.5.3"
+		yotubedl="youtube_dl-"
+		filename="youtube_dl-${version}"
+		gunzip ${filename}.tar.gz
+    tar xf ${filename}.tar
+		rm -rf /usr/lib/python2.7/youtube_dl
+    cp -rf ${filename}/youtube_dl /usr/lib/python2.7/youtube_dl
+    rm ${filename}.tar
+    rm -rf $filename
+}
+
+install_youtubedl()
 {
     printf " ----- YoutubeDL install  ----- \n\n "
-		wget "https://files.pythonhosted.org/packages/17/1a/096956488d472038f55bcb384412860541bcdbe8bb199ddfde51659ac5ee/youtube_dl-2020.3.1.tar.gz"
+    wget https://files.pythonhosted.org/packages/17/1a/096956488d472038f55bcb384412860541bcdbe8bb199ddfde51659ac5ee/youtube_dl-2020.3.1.tar.gz
     gunzip youtube_dl-2020.3.1.tar.gz
     tar xf youtube_dl-2020.3.1.tar
     mv youtube_dl-2020.3.1/youtube_dl /usr/lib/python2.7/youtube_dl
@@ -310,7 +324,7 @@ set -e
 #configure_Ampache
 #install_filemanager
 #configure_vsftpd
-#install_youtubeDL
+#install_youtubedl
 #configure_transmission
 #configure_samba
 #configure_minidlna
@@ -318,4 +332,4 @@ set -e
 #configure_bluetooth
 #configure_gmplayer
 #configure_alarm
-
+#update_youtubedl

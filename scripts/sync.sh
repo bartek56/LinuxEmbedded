@@ -107,9 +107,20 @@ tvshowsToHardDrive()
 }
 
 set -e
+argument=$1
+#printf $test
 
-#remoteSyncFromDell
-#remoteSyncFromBrzozowscy
+
+if [[ "$argument" == "mediaserver" ]]; then
+    printf "mediaserver\n"
+elif [[ "$argument" == "brzozowscy" ]]; then
+    printf "brzozowscy\n"
+    remoteSyncFromBrzozowscy
+elif [[ "$argument" == "dell" ]]; then 
+    printf "dell\n"
+    remoteSyncFromDell
+fi
+
 #localSyncInBrzozowscy
 
 # --------------------------- #

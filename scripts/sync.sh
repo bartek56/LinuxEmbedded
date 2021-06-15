@@ -16,7 +16,6 @@
 # MediaServer
 #  movies                        Brzozowscy server (share)   
 #  TVShows                       Brzozowscy server (share)
-#  Garmin music         remote   Brzozowscy server (share)   remoteSyncFromBrzozowscy
 #  music                remote   Brzozowscy server (share)   remoteSyncFromBrzozowscy
 #  books                remote   Brzozowscy server (share)   remoteSyncFromBrzozowscy
 #  audiobooks           remote   Brzozowscy server (share)   remoteSyncFromBrzozowscy
@@ -60,9 +59,6 @@ remoteSyncFromBrzozowscy()
 
     printf "\nAUDIOBOOKS \n"
     rsync -srvazz --delete "$MEDIASERVER_REMOTE:/mnt/TOSHIBA EXT/Audiobooks" "/media/shareTV/share/"
-    
-    printf "\nGarmin Music \n"
-    rsync -srvazz --delete "$MEDIASERVER_REMOTE:/mnt/TOSHIBA EXT/Garmin Music" "/media/shareTV/share/"
 }
 
 
@@ -98,17 +94,15 @@ localSyncInBrzozowscy()
 tvshowsToHardDrive()
 {
     printf "\nGALILEO \n"
-    filesList=$(rsync -snrvazz "/media/shareTV/share/TVShows/Galileo/" "$MEDIASERVER_REMOTE:/mnt/TOSHIBA EXT/Wideo/TV Shows/Galileo/" | grep -E "*.mkv|*.ts|*.txt")
+    filesList=$(rsync -snrvazz --ignore-existing "/media/shareTV/share/TVShows/Galileo/" "$MEDIASERVER_REMOTE:/mnt/TOSHIBA EXT/Wideo/TV Shows/Galileo/" | grep -E "*.mkv|*.ts|*.txt")
     for file in $filesList; do
         printf "%s\n" $file
         cp -n "/media/shareTV/share/TVShows/Galileo/$file" "/media/programmer/Dell HDD/Galileo/"
-
     done
 }
 
 set -e
 argument=$1
-#printf $test
 
 
 if [[ "$argument" == "mediaserver" ]]; then
@@ -119,13 +113,12 @@ elif [[ "$argument" == "brzozowscy" ]]; then
 elif [[ "$argument" == "dell" ]]; then 
     printf "dell\n"
     remoteSyncFromDell
+elif [[ "$argument" == "local" ]]; then 
+    printf "local\n"
+    localSyncInBrzozowscy
+elif [[ "$argument" == "galileo" ]]; then 
+    printf "Galileo to HardDrive\n"
+    tvshowsToHardDrive
 fi
-
-#localSyncInBrzozowscy
-
-# --------------------------- #
-
-#tvshowsToHardDrive
-#garminMusicFromBrzozowscy 
 
 

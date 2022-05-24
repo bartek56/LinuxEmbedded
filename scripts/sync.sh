@@ -37,13 +37,13 @@ syncFromDell()
     ssh -p $BRZOZOWSCY_PORT -t $BRZOZOWSCY_REMOTE_ROOT 'mount /dev/sda1 /media/priv'
 
     printf "\nDOKUMENTY \n"
-    rsync -srvazz -e 'ssh -p $BRZOZOWSCY_PORT' --delete "/home/bartosz/Documents/dokumenty" "$BRZOZOWSCY_REMOTE:/media/priv/"
+    rsync -srvazz -e "ssh -p $BRZOZOWSCY_PORT" --delete "/home/bartosz/Documents/dokumenty" "$BRZOZOWSCY_REMOTE:/media/priv/"
 
     printf "\nTAPETY \n"
-    rsync -srvazz -e 'ssh -p $BRZOZOWSCY_PORT' --delete "/home/bartosz/Pictures/tapety" "$BRZOZOWSCY_REMOTE:/media/shareTV/share/"
+    rsync -srvazz -e "ssh -p $BRZOZOWSCY_PORT" --delete "/home/bartosz/Pictures/tapety" "$BRZOZOWSCY_REMOTE:/media/shareTV/share/"
 
     printf "\nZDJECIA \n"
-    rsync -srvazz -e 'ssh -p $BRZOZOWSCY_PORT' --delete "/home/bartosz/Pictures/z telefonu/7 Xiaomi Mi" "$BRZOZOWSCY_REMOTE:/media/priv/Zdjęcia/z telefonu/"
+    rsync -srvazz -e "ssh -p $BRZOZOWSCY_PORT" --delete "/home/bartosz/Pictures/z telefonu/7 Xiaomi Mi" "$BRZOZOWSCY_REMOTE:/media/priv/Zdjęcia/z telefonu/"
 
     printf "\numount \n"
     ssh -p $BRZOZOWSCY_PORT -t $BRZOZOWSCY_REMOTE_ROOT 'umount /media/priv'
@@ -53,13 +53,13 @@ syncFromBrzozowscy()
 {
     printf "Remote Sync from Brzozowscy\n"
     printf "MUZYKA \n"
-    rsync -srvazz -e 'ssh -p $MEDIASERVER_PORT' --delete "$MEDIASERVER_REMOTE:/mnt/TOSHIBA EXT/muzyka/" "/media/shareTV/share/music/"
+    rsync -srvazz -e "ssh -p $MEDIASERVER_PORT" --delete "$MEDIASERVER_REMOTE:/mnt/TOSHIBA EXT/muzyka/" "/media/shareTV/share/music/"
 
     printf "\nKSIAZKI \n"
-    rsync -srvazz -e 'ssh -p $MEDIASERVER_PORT'--delete "$MEDIASERVER_REMOTE:/mnt/TOSHIBA EXT/books" "/media/shareTV/share/"
+    rsync -srvazz -e "ssh -p $MEDIASERVER_PORT" --delete "$MEDIASERVER_REMOTE:/mnt/TOSHIBA EXT/books" "/media/shareTV/share/"
 
     printf "\nAUDIOBOOKS \n"
-    rsync -srvazz -e 'ssh -p $MEDIASERVER_PORT'--delete "$MEDIASERVER_REMOTE:/mnt/TOSHIBA EXT/Audiobooks" "/media/shareTV/share/"
+    rsync -srvazz -e "ssh -p $MEDIASERVER_PORT" --delete "$MEDIASERVER_REMOTE:/mnt/TOSHIBA EXT/Audiobooks" "/media/shareTV/share/"
 }
 
 
